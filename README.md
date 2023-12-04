@@ -1,1 +1,3 @@
-# solar-cadastre
+# Solar Cadastre
+
+The analytics developed by EURAC will be differentiated for buildings in the solar cadastre with and without PV plants. For buildings without PV plants the analytics will be focused on the assessment of KPIs useful for business model calculation, i.e., self-consumption/self-sufficiency, etc. Electricity demand profile will be created based on assumptions on the building typology and on the building stock (from WP3). The generation from PV is already an output of the solar cadastre and the values will be updated considering the technology development of the PV sector in the past years. For roofs with existing installations, the analytics will be focused on the diagnostics providing assessment of expected energy production that can be compared with monitored data if provided by the user.
