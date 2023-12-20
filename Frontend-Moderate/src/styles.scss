@@ -1,0 +1,53 @@
+/* You can add global styles to this file, and also import other style files */
+.leaflet-control-layers-toggle {
+	background-image: url(./assets/img/icons/layers_icon.svg) !important;
+	width: 36px;
+	height: 36px;
+}
+
+/* Estilo para las ventanas emergentes */
+.leaflet-popup-content-wrapper {
+    background-color: yellow;
+    color: black;
+    font-size: 14px;
+    padding: 10px;
+  }
+  
+  /* Estilo para la flecha de la ventana emergente */
+  .leaflet-popup-tip-container {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+
+.geocoder-control-input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: white;
+    background-repeat: no-repeat;
+    background-size: 26px;
+    border: none;
+    padding: 0;
+    text-indent: 6px;
+    font-size: 13px;
+    line-height: normal;
+    height: auto;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 200px;
+    background-position: right top 50%;
+    box-sizing: border-box;
+    border-radius: 10px;
+}
+
+/* Estilos para los resultados de la búsqueda */
+.geocoder-control-suggestions {
+  margin-top: 5%;
+  background-color: white; /* Fondo de los resultados */
+  border: 1px solid #ccc; /* Borde de los resultados */
+  border-radius: 4px; /* Bordes redondeados */
+  padding: 10px; /* Espaciado interno */
+  max-height: 200px; /* Altura máxima de los resultados, ajusta según tus necesidades */
+  overflow-y: auto; /* Scroll vertical si los resultados son largos */
+}

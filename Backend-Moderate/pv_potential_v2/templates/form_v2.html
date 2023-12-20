@@ -1,0 +1,72 @@
+{% load static %}
+
+<!-- Template to input data using a form in order to get solar potential KPIs -->
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Form potential V2</title>
+    <link rel="stylesheet" href="{% static 'pv_potential_v2/styles.css' %}">
+    <!--JQuery-->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> 
+    <!--JavaScript script to show the table with KPIs when got from Ajax request-->
+    <script src="{% static 'pv_potential_v2/show_result_form.js' %}"></script> 
+</head>
+
+<body>
+
+    <h1>Form for photovoltaic potential calculation</h1>
+
+    <form method="POST" action="{% url 'test_v2:result' %}">
+        {% csrf_token %}
+        <label for="lat">Latitude</label>
+        <input type="number" step="any" name="lat" required>
+
+        <label for="long">Longitude</label>
+        <input type="number" step="any" name="lon" required><br/>
+
+        <label for="roof_tilt">Roof tilt</label>
+        <input type="number" step="any" min="0" name="roof_tilt" required>
+
+        <label for="roof_orientation">Roof orientation</label>
+        <input type="number" step="any" name="roof_orientation" required><br/>
+
+        <label for="nom_power">Nominal power</label>
+        <input type="number" step="any" min="0" name="nom_power" required>
+        
+        {% comment %} <label for="yearly_pv_generation">Yearly PV generation</label>
+        <input type="number" step="any" name="yearly_pv_generation" required><br/> {% endcomment %}
+
+        {% comment %} <label for="consumption_type">Consumption type</label>
+        <select name="consumption_type">
+            <option value="residential">Residential</option>
+            <option value="commercial">Commercial</option>
+        </select> {% endcomment %}
+
+        <label for="yearly_consumption">Yearly consumption</label>
+        <input type="number" step="any" min="0" name="yearly_consumption" required><br/>
+
+        <label for="electricity_cost">Electricity cost</label>
+        <input type="number" step="0.01" min="0" name="electricity_cost">
+
+        <label for="value_sold_electricity">Value of sold electricity</label>
+        <input type="number" step="0.01" min="0" name="value_sold_electricity" required>
+
+        <label for="pv_cost">PV cost</label>
+        <input type="number" step="0.01" min="0" name="pv_cost" required><br/>
+
+        <input type="submit" value="Calculate">
+    </form>
+
+    <div id="message" style="display: none">
+        Processing, please wait
+    </div>
+
+    <input id="backbuttonstate" type="text" value="0" style="display:none;">
+
+</body>
+
+</html>
