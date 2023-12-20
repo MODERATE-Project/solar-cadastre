@@ -1,0 +1,15 @@
+.mapa-container {
+    display: flex;
+    flex-direction: row; /* Para alinear horizontalmente */
+}
+
+#map {
+    width: 80%;
+    height: 100vh;
+}
+
+/* Estilo para el contenedor de datos */
+#datos-container {
+    width: 20%;
+    padding: 5px;
+}

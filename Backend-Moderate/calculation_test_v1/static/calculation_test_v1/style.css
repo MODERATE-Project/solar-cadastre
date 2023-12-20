@@ -1,0 +1,65 @@
+/*
+    Styles for the template of electrical consumption form
+*/
+
+form {
+    width: 35%;
+    border-radius: 5px;
+    border: 1px solid;
+    display: inline-block;
+}
+
+label {
+    padding-left: 8px;
+}
+
+input {
+    margin: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+p.potential {
+    color: green;
+    font-size: larger;
+    font-weight: bold;
+}
+
+p.error {
+    color: red;
+    font-size: larger;
+    font-weight: bold;
+}
+
+.info {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+}
+
+span {
+    font-weight: bold;
+}
+
+table {
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
+
+th, td {
+    border: 1px solid black;
+    width: 15%;
+    height: 30px;
+}
+
+th {
+    background-color: darkgoldenrod;
+}
+
+tr:nth-child(even) > td{ 
+    background-color: darkkhaki;
+}
+
+tr:nth-child(odd) > td{ 
+    background-color: antiquewhite;
+}

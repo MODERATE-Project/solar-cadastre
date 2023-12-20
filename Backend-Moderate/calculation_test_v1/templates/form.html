@@ -1,0 +1,66 @@
+{% load static %} <!--Loads the documents in static folder, in this case, the stylesheet-->
+
+<!--
+    Template containing the form to input electrical consumption and geographical coordinates
+    to calculate photovoltaic potential
+    The output is shown under the form. It can be the calculated potential or an error code
+-->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Form prototype</title>
+    <link rel="stylesheet" href="{% static 'calculation_test_v1/style.css' %}">
+</head>
+
+<body>
+    <h1>Photovoltaic potential calculation example</h1>
+    <form action="{% url 'test_v1:potential' %}" method="post">
+        {% csrf_token %}
+        {% comment %} {{ form }} Add a form from Django's Form class {% endcomment %}
+        <label for="consumption">Consumption:</label>
+        <input type="number" step="any" min="0" name="consumption" id="consumption" required><br/>
+
+        <label for="lat">Latitude:</label>
+        <input type="number" step="any" name="lat" id="lat" required>
+
+        <label for="long">Longitude:</label>
+        <input type="number" step="any" name="long" id="long" required><br/>
+
+        <input type="submit" value="Calculate">  <!--VALID COORDINATES EXAMPLE: 692097.7423159877, 4235395.938976591-->
+    </form>
+
+    {% if potential or potential == 0 %}
+        <p class="potential">Your potential is {{ potential }}.</p>
+        <div class="info">
+            <h2>Info</h2>
+            <p>You belong to profile: <span>{{ profile.profile }}</span></p>
+            <p>Profile range: <span>{{ profile.min_value }} - {{ profile.max_value }}</span></p>
+            <h3>Features</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for feature, value in features.items %}
+                        <tr>
+                            <td>{{ feature }}</td>
+                            <td>{{ value }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+    {% if error %}
+    <p class="error">{{ error }}.</p>
+    {% endif %}
+</body>
+
+</html>

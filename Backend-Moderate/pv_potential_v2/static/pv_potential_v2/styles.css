@@ -1,0 +1,50 @@
+/*
+    Styles for the template in which a table with KPIs is shown
+*/
+
+table {
+    border-collapse: collapse;
+    margin-left: 8px;
+    /* display: none; */
+}
+
+th, td {
+    border: 1px solid;
+    width: 30%;
+    padding: 5px;
+}
+
+form {
+    border: 1px solid;
+    border-radius: 5px;
+    width: 55%;
+}
+
+form label {
+    padding-left: 8px;
+}
+
+form input {
+    padding: 5px;
+    margin: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+form select {
+    height: 30px;
+    margin: 8px;
+}
+
+div#message {
+    margin-top: 20px;
+    font-size: x-large;
+}
+
+button {
+    margin-left: 8px;
+    margin-top: 20px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: large;
+}
