@@ -136,9 +136,7 @@ def result(request):
         # Data from form
         roof_tilt = request.POST["roof_tilt"]
         roof_orientation = request.POST["roof_orientation"]
-        roof_azimuth = roof_orientation # DOUBT
-        nominal_power = float(request.POST["nom_power"])
-        pv_nominal_power = nominal_power # DOUBT
+        pv_nominal_power = float(request.POST["nom_power"])
         yearly_consumption = float(request.POST["yearly_consumption"])   
         cost_of_electricity = float(request.POST["electricity_cost"])  
         value_of_sold_electricity = float(request.POST["value_sold_electricity"])
@@ -152,16 +150,15 @@ def result(request):
         features = getGeoserverFeatures(x_coord, y_coord);
 
         # Needed features from GeoServer
-        yearly_pv_generation = float(features["average_yi"])   # GeoServer
-        yearly_pv_generation = 1200 # EXAMPLE. Data not available in GeoServer
+        yearly_pv_generation_per_kWp = float(features["average_yi"])   # GeoServer
+        yearly_pv_generation_per_kWp = 1200 # EXAMPLE. Data not available in GeoServer
+        yearly_pv_generation = yearly_pv_generation_per_kWp * pv_nominal_power
         consumption_type = features["building_u"]   # GeoServer Default: residential
 
         # Example data
         # latitude = 46.1
         # longitude = 11.1
         # roof_tilt = 30
-        # roof_azimuth = 0
-        # nominal_power = 1
         # building_coordinates = (latitude, longitude)  # Replace with coordinates from the map
         # pv_nominal_power = 1  # User input (to be validated with area available from pre-processed data)
         # roof_tilt = 30  # User input
@@ -173,9 +170,6 @@ def result(request):
         # cost_of_electricity = 0.3  # €/kWh User input with default values already set
         # value_of_sold_electricity = 0.1  # €/kWh User input with default values already set
         # cost_of_PV = 2000   # €/kWp  User input with default values already set
-
-        # print('Downloading data...\n')
-        # pv_data = calcs.get_pv(latitude, longitude, roof_tilt, roof_azimuth, nominal_power)  # get PV data from PVGIS website
 
         # KPI calculation 
         print('Techno-economic calculation...\n')

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'calculation_test_v1.apps.CalculationTestV1Config',
     'pv_potential_v2.apps.PvPotentialV2Config',
+    'existing_system_v1.apps.ExistingSystemV1Config',
     'corsheaders'
 ]
 

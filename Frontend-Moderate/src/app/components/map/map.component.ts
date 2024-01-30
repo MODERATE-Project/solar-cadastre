@@ -5,6 +5,9 @@ import * as esri from 'esri-leaflet'
 import axios from 'axios';
 import { BuildingsService } from 'src/app/services/buildings.service';
 import 'proj4leaflet';
+import { schemeCategory10 } from 'd3-scale-chromatic';
+import * as d3 from 'd3'; 
+
 
 @Component({
   selector: 'app-map',
@@ -26,9 +29,42 @@ export class MapComponent implements OnInit {
   WMS_CADASTRE = 'https://ovc.catastro.meh.es/Cartografia/WMS/ServidorWMS.aspx?';
   properties: any[];
 
+  // Chart options for all charts
+  view: [number, number] = [500, 300];
+  legend: boolean = false;
+  showLabels: boolean = true;
+  animations: boolean = true;
+  xAxis: boolean = true;
+  yAxis: boolean = true;
+  showYAxisLabel: boolean = true;
+  showXAxisLabel: boolean = true;
+  showGridLines: boolean = true;
+  // colorScheme = {
+  //   domain: [...schemeCategory10, '#FFA07A', '#6A5ACD']
+  // } as any;
+  colorScheme = {
+    domain: ['#6A5ACD']
+  } as any;
+  gradient: boolean = true
+
+  // Line chart axes and data
+  xAxisLabelLine: string = 'Hour of Day';
+  yAxisLabelLine: string = 'Energy Production [kWh]';
+  chartDataLine: any[];
+
+  // Bar chart about yearly generation axes and data
+  xAxisLabelBarYear: string = 'Year';
+  yAxisLabelBarYear: string = 'Energy Production [kWh]';
+  chartDataBarYear: any[];
+
+  // Bar chart about monthly generation axes and data
+  xAxisLabelBarMonth: string = 'Month';
+  yAxisLabelBarMonth: string = 'Energy Production [kWh]';
+  chartDataBarMonth: any[];
+
   constructor(private renderer: Renderer2, private buildingServices: BuildingsService) { }
 
-  //Get cookie value
+  //Get cookie value, indicating the name of the cookie
   getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -178,9 +214,15 @@ export class MapComponent implements OnInit {
           console.log(response)
           const streetName = response.data.address.Address;
           const useBuilding = nominatimResponse.data.type;
+          // const useBuilding = "residential"
+
+          // Delete previous forms, results and charts
+          const calculation_div = document.querySelector("div#calculation");
+          this.renderer.setProperty(calculation_div, 'innerHTML', '');
+          document.getElementById("chart").style.display = "none";
           
           // Actualizar el contenido del div con los datos, incluyendo el nombre de la calle
-          const datosContainer = document.getElementById('datos-container');
+          const datosContainer = document.getElementById('tablas');
           this.renderer.setProperty(datosContainer, 'innerHTML', `
             <h2>${streetName}</h2>
             <br>
@@ -265,12 +307,23 @@ export class MapComponent implements OnInit {
             </table>
 
             <br>
-
-            <div id='calculation'>
+            `
+          );
+        })
+        .then(async() => {
+          console.log(latLng);
+          document.getElementById("buttons").style.display = "block";
+          let btnPotential = document.querySelector("button#showPotential"); // Button to show potential form
+          let btnEvaluation = document.querySelector("button#showEvaluation"); // Button to show evaluation form
+          let calcDiv = document.querySelector("div#calculation"); // Container where forms and results are shown
+          btnPotential.addEventListener("click", () => {
+            document.getElementById("chart").style.display = "none";
+            // Show potential form
+            calcDiv.innerHTML = `
 
               <h3>Potential calculation</h3>
-            
-              <form method="POST" action='http://localhost:8000/v2/potential/result'>
+              
+              <form method="POST" action='http://localhost:8000/potential/v2/result'>
 
                 <label for="roof_tilt">Roof tilt: </label>
                 <input style="margin: 5px 0; width: 120px" type="number" step="any" min="0" name="roof_tilt" required><br/>
@@ -282,7 +335,7 @@ export class MapComponent implements OnInit {
                 <input style="margin: 5px 0; width: 120px" type="number" step="any" min="0" name="nom_power" required><br/>
                 
                 <label for="yearly_consumption">Yearly consumption [kWh]: </label>
-                <input style="margin: 5px 0; width: 120px: " type="number" step="any" min="0" name="yearly_consumption" required><br/>
+                <input style="margin: 5px 0; width: 120px" type="number" step="any" min="0" name="yearly_consumption" required><br/>
 
                 <label for="electricity_cost">Electricity cost [€/kWh]: </label>
                 <input style="margin: 5px 0; width: 120px" type="number" step="0.01" min="0" name="electricity_cost"><br/>
@@ -297,96 +350,185 @@ export class MapComponent implements OnInit {
                 <input style="margin: 5px 0" type="reset" value="Reset">
 
               </form>
+            `;
+            let form = document.querySelector("form");
+            form.addEventListener("submit", async(event) => { // Actions to perform when submitting the form
+              event.preventDefault(); // Prevent the form redirecting to another page
+              const url = form.action; // Save in url variable the value of action attribute of the form
+              const formData = new FormData(form); // Create an object containing the data inserted in the form
+              formData.append("lat", latLng.lat); // Append to the formData object the latitude of the click
+              formData.append("lon", latLng.lng); // Append to the formData object the longitude of the click
+              await fetch("http://localhost:8000/potential/v2/getCookie", { method: "GET", credentials: "include" }); // Get the CSRF cookie from backend
+              form.style.display = "none";  // Hide form
+              const message = document.querySelector("#calculation h3");
+              message.textContent = "Processing..."; // Change text to indicate that the processing of data is being made
+              const headers = new Headers(); // Create an object to contain the headers of the request to server
+              headers.append('X-CSRFToken', this.getCookie("csrftoken")) // Append the CSRF cookie to the headers object
+              fetch(url, { method: "POST", headers: headers, body: formData, credentials: "include" }) // Obtain the KPIs from server with data inserted in the form
+                .then(async(response) => {
+                  const data = await response.json();
+                  const table = document.createElement("table");
+                  table.setAttribute("style", "border: 1px solid; width: 100%");
+                  for (const key in data) {  // Create table with results
+                    const tr = document.createElement("tr");
+                    const tdKey = document.createElement("td");
+                    const tdValue = document.createElement("td");
+                    tdKey.textContent = key;
+                    tdValue.textContent = data[key].toFixed(2);
+                    tdKey.setAttribute("style", "background-color: #8B0000; color: white");
+                    tdValue.setAttribute("style", "background-color: #DC143C; color: white");
+                    tr.appendChild(tdKey);
+                    tr.appendChild(tdValue);
+                    table.appendChild(tr);
+                  }
+                  message.textContent = "Solar potential";
+                  calcDiv.appendChild(table);
+                })
+                .catch(() => {
+                  message.textContent = "Server error";
+                })
+                .finally(() => { // Always, on success and on error, add a button to return to form
+                  const button = document.createElement("button");
+                  button.addEventListener("click", () => { // Button behavior
+                    form.style.display = "block"; // Show form again
+                    const tableDelete = document.querySelector("#calculation table");
+                    if (tableDelete) {
+                      calcDiv.removeChild(tableDelete); // Delete results table if present
+                    }
+                    calcDiv.removeChild(button); // Remove button
+                    message.textContent = "Potential calculation";
+                  });
+                  button.textContent = "Back to form";
+                  button.setAttribute("style", "margin-top: 20px");
+                  calcDiv.appendChild(button);
+                });
+            });
+          });
+          btnEvaluation.addEventListener("click", () => {
+            document.getElementById("chart").style.display = "none"; // Hide charts
+            // Show evaluation form
+            calcDiv.innerHTML = `
 
-            </div>
+            <h3>PV system evaluation</h3>
+              
+            <form method="POST" action='http://localhost:8000/existing/v1/result'>
+              
+              <label for="roof_tilt">Roof tilt: </label>
+              <input style="margin: 5px 0; width: 120px" type="number" step="any" min="0" name="roof_tilt" required><br/>
 
+              <label for="roof_orientation">Roof orientation: </label>
+              <input style="margin: 5px 0; width: 120px" type="number" step="any" name="roof_orientation" required><br/>
+
+              <label for="nom_power">Nominal power: </label>
+              <input style="margin: 5px 0; width: 120px" type="number" step="any" min="0" name="nom_power" required><br/>
+
+              <label for="real_last_year">Real energy generated last year: </label>
+              <input style="margin: 5px 0; width: 120px" type="number" step="any" min="0" name="real_last_year" required><br/>
+              
+              <label for="month">Month: </label>
+              <select name="month" style="margin: 5px 0">
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+              </select><br/>
+
+              <input style="margin: 5px 0" type="submit" value="Evaluate">
+              <input style="margin: 5px 0" type="reset" value="Reset">
+
+            </form>
             `
-          );
-        })
-        .then(async() => {
-          console.log(latLng);
+            let form = document.querySelector("form");
+
+            // By default, the current month is selected
+            const currentMonth = (new Date()).getMonth() + 1;
+            const options = document.getElementsByTagName("option");
+            for (let option of options) {
+              if (parseInt(option.value) == currentMonth) {
+                option.setAttribute("selected", "true");
+                break;
+              }
+            }
+            
+            form.addEventListener("submit", async(event) => {
+              event.preventDefault(); // Prevent the form redirecting to another page
+              const url = form.action; // Save in url variable the value of action attribute of the form
+              const formData = new FormData(form); // Create an object containing the data inserted in the form
+              formData.append("lat", latLng.lat); // Append to the formData object the latitude of the click
+              formData.append("lon", latLng.lng); // Append to the formData object the longitude of the click
+              await fetch("http://localhost:8000/existing/v1/getCookie", { method: "GET", credentials: "include" }); // Get the CSRF cookie from backend
+              form.style.display = "none";  // Hide form
+              const message = document.querySelector("#calculation h3");
+              message.textContent = "Processing..."; // Change text to indicate that the processing of data is being made
+              const headers = new Headers(); // Create an object to contain the headers of the request to server
+              headers.append('X-CSRFToken', this.getCookie("csrftoken")) // Append the CSRF cookie to the headers object
+              fetch(url, { method: "POST", headers: headers, body: formData, credentials: "include" }) // Obtain the KPIs from server with data inserted in the form
+                .then(async(response) => {
+                  // const result = await response.text();
+                  // message.textContent = result;
+                  const result = await response.json(); // Get JSON with response data
+                  console.log(result.generation_data);
+                  
+                  // Show messages
+                  message.textContent = "Evaluation result";
+                  const expectedP = document.createElement("p");
+                  expectedP.textContent = "Estimated yearly energy generation: " + result.estimated_generation + " kWh";
+                  calcDiv.appendChild(expectedP);
+                  const expectedMonthP = document.createElement("p");
+                  expectedMonthP.textContent = "For the selected month, highest energy generation is: " + result.max_month_generation + " kWh";
+                  calcDiv.appendChild(expectedMonthP);
+                  const suggestionP = document.createElement("p");
+                  suggestionP.textContent = result.suggestion;
+                  calcDiv.appendChild(suggestionP);
+
+                  // Set chart data
+                  this.chartDataLine = result.generation_data;
+                  document.getElementById("chart").style.display = "flex";
+                  document.getElementById("chart").style.justifyContent = "space-evenly";
+                  const pChartDate = document.querySelector("div#chart p#chart_date");
+                  pChartDate.innerHTML = result.generation_data[0].name; // Subtitle of the chart, containing year, day and month shown
+                  this.chartDataBarYear = result.yearly_generation;
+                  this.chartDataBarMonth = result.monthly_generation;
+                })
+                .catch((error) => {
+                  console.log(error);
+                  message.textContent = "Error";
+                })
+                .finally(() => { // Show a button to return to form on success and on error
+                  const button = document.createElement("button");
+                  button.addEventListener("click", () => { // Button behavior
+                    form.style.display = "block"; // Show form again
+                    document.getElementById("chart").style.display = "none";
+                    calcDiv.removeChild(button); // Remove button
+
+                    // Remove all messages displayed. These are the suggestion and the expected generations
+                    const pDelete = calcDiv.getElementsByTagName("p"); 
+                    for (let i = pDelete.length - 1; i >= 0; i--) {
+                      const pNode = pDelete[i];
+                      calcDiv.removeChild(pNode);
+                    }
+                    message.textContent = "PV system evaluation";
+                  });
+                  button.textContent = "Back to form";
+                  button.setAttribute("style", "margin-top: 20px");
+                  calcDiv.appendChild(button);
+                })
+            });
+          })
           // console.log(this.point);
           // document.cookie = "csrftoken" + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'; //Delete cookie
-          let form = document.querySelector("form");
-          form.addEventListener("submit", async(event) => { // Actions to perform when submitting the form
-            event.preventDefault(); // Prevent the form redirecting to another page
-            const url = form.action; // Save in url variable the value of action attribute of the form
-            const formData = new FormData(form); // Create an object containing the data inserted in the form
-            formData.append("lat", latLng.lat); // Append to the formData object the latitude of the click
-            formData.append("lon", latLng.lng); // Append to the formData object the longitude of the click
-            await fetch("http://localhost:8000/v2/getCookie", { method: "GET", credentials: "include" }); // Get the CSRF cookie from backend
-            form.style.display = "none";  // Hide form
-            const formContainer = document.getElementById("calculation");
-            const message = document.querySelector("#calculation h3");
-            message.textContent = "Processing..."; // Change text to indicate that the processing of data is being made
-            const headers = new Headers(); // Create an object to contain the headers of the request to server
-            headers.append('X-CSRFToken', this.getCookie("csrftoken")) // Append the CSRF cookie to the headers object
-            fetch(url, { method: "POST", headers: headers, body: formData, credentials: "include" }) // Obtain the KPIs from server with data inserted in the form
-              .then(async(response) => {
-                const data = await response.json();
-                const table = document.createElement("table");
-                table.setAttribute("style", "border: 1px solid; width: 100%");
-                for (const key in data) {  // Create table with results
-                  const tr = document.createElement("tr");
-                  const tdKey = document.createElement("td");
-                  const tdValue = document.createElement("td");
-                  tdKey.textContent = key;
-                  tdValue.textContent = data[key].toFixed(2);
-                  tdKey.setAttribute("style", "background-color: #8B0000; color: white");
-                  tdValue.setAttribute("style", "background-color: #DC143C; color: white");
-                  tr.appendChild(tdKey);
-                  tr.appendChild(tdValue);
-                  table.appendChild(tr);
-                }
-                message.textContent = "Solar potential";
-                formContainer.appendChild(table);
-              })
-              .catch(() => {
-                message.textContent = "Server error";
-              })
-              .finally(() => { // Always, on success and on error, add a button to return to form
-                const button = document.createElement("button");
-                button.addEventListener("click", () => { // Button behavior
-                  form.style.display = "block"; // Show form again
-                  const tableDelete = document.querySelector("#calculation table");
-                  if (tableDelete) {
-                    formContainer.removeChild(tableDelete); // Delete results table if present
-                  }
-                  formContainer.removeChild(button); // Remove button
-                  message.textContent = "Potential calculation";
-                });
-                button.textContent = "Back to form";
-                button.setAttribute("style", "margin-top: 20px");
-                formContainer.appendChild(button);
-              });
-          });
         })
         .catch((error) => {
           console.error('Error al obtener el nombre de la calle:', error);
         });
-
-        // let consumption = prompt("Enter your consumption")
-        // if (consumption != null && consumption != "") {
-        //   const formData = new FormData();
-        //   formData.append("lat", latLng.lat);
-        //   formData.append("lon", latLng.lng);
-        //   // formData.append("x_coord", this.point.x);
-        //   // formData.append("y_coord", this.point.y);
-        //   const response = await fetch("http://localhost:8000/v1/potential/form", { method: "POST", body: formData });
-        //   const potential = await response.text();
-        //   console.log(response);
-        //   console.log(potential);
-        //   if (response.status == 200) {
-        //     window.alert("Your potential is: " + potential);
-        //   } else if (response.status == 400) {
-        //     window.alert(potential);
-        //   } else {
-        //     window.alert("Server error");
-        //   }
-        // }
-
-        // console.log("latLng: " + latLng);
-        // console.log("Point: " + this.point);      
     });
 
     // search widget

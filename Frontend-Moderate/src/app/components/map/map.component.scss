@@ -4,7 +4,7 @@
 }
 
 #map {
-    width: 80%;
+    width: 100%;
     height: 100vh;
 }
 
@@ -12,4 +12,25 @@
 #datos-container {
     width: 20%;
     padding: 5px;
+}
+
+#izq {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+}
+
+#chart {
+    display: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+#line_chart > div {
+    display: flex;
+}
+
+#line_chart > div p {
+    max-width: 500px;
 }

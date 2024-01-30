@@ -1,9 +1,96 @@
 <div class="mapa-container">
-  <div id="map"></div>
-  <div id="datos-container">
-    <!-- El contenido se llenará aquí -->
-    <h3>Click on a building on the map to show the data.</h3>
-    <div id="calculation">
+  <div id="izq">
+    <div id="map"></div>
+    <div id="chart">
+     
+      <div id="bar_chart_year">
+        <h3>Yearly cumulatives of a reference system</h3>
+        <ngx-charts-bar-vertical
+          [view]="view"
+          [scheme]="colorScheme"
+          [results]="chartDataBarYear"
+          [xAxis]="xAxis"
+          [yAxis]="yAxis"
+          [legend]="legend"
+          [showXAxisLabel]="showXAxisLabel"
+          [showYAxisLabel]="showYAxisLabel"
+          [xAxisLabel]="xAxisLabelBarYear"
+          [yAxisLabel]="yAxisLabelBarYear"
+        >
+        </ngx-charts-bar-vertical>
+      </div>
+
+      <div id="bar_chart_month">
+        <h3>Monthly means</h3>
+        <ngx-charts-bar-vertical
+          [view]="view"
+          [scheme]="colorScheme"
+          [results]="chartDataBarMonth"
+          [xAxis]="xAxis"
+          [yAxis]="yAxis"
+          [legend]="legend"
+          [showXAxisLabel]="showXAxisLabel"
+          [showYAxisLabel]="showYAxisLabel"
+          [xAxisLabel]="xAxisLabelBarMonth"
+          [yAxisLabel]="yAxisLabelBarMonth"
+        >
+        </ngx-charts-bar-vertical>
+      </div>
+
+      <div id="line_chart">
+        <h3>Hourly energy production profiles for highest energy day of the selected month</h3>
+        <p id="chart_date"></p>
+        <div>
+          <ngx-charts-line-chart
+            [view]="view"
+            [legend]="legend"
+            [animations]="animations"
+            [scheme]="colorScheme"
+            [gradient]="gradient"
+            [showXAxisLabel]="showXAxisLabel"
+            [showYAxisLabel]="showYAxisLabel"
+            [xAxis]="xAxis"
+            [yAxis]="yAxis"
+            [xAxisLabel]="xAxisLabelLine"
+            [yAxisLabel]="yAxisLabelLine"
+            [results]="chartDataLine"
+            [showGridLines]="showGridLines"
+          >
+          </ngx-charts-line-chart>
+          <div>
+            <p>The shown curve represents the hourly generation of the highest generation day for your location. Compare it with the data of your monitoring app.</p>
+            <p>If the curves are different you may have one of the following issues:</p>
+            <ul>
+              <li>Close shading</li>
+              <li>Far shading (e. g. mountains)</li>
+              <li>Soiling</li>
+              <li>Modules broken/disconnected</li>
+              <li>Overheating</li>
+              <li>Snow</li>
+              <li>Inverter failure</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
     </div>
+  </div>
+
+  
+  <div id="datos-container">
+
+    <div id="tablas">
+      <!-- El contenido se llenará aquí -->
+      <h3>Click on a building on the map to show the data.</h3>
+    </div>
+
+    <div id='calculation'>
+    </div>
+
+    <div id="buttons" style="margin-top: 30px; display: none">
+      <button id="showPotential" style="margin: 3px;">Potential calculation</button>
+      <button id="showEvaluation" style="margin: 3px;">PV system evaluation</button>
+    </div>
+
   </div>
 </div>

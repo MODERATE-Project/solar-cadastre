@@ -1,0 +1,16 @@
+form {
+    border: 1px solid;
+    border-radius: 5px;
+    width: 55%;
+}
+
+form label {
+    padding-left: 8px;
+}
+
+form input {
+    padding: 5px;
+    margin: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+}
