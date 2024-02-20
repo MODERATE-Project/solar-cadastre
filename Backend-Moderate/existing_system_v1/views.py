@@ -76,17 +76,9 @@ def system_evaluation(request):
         azimuth = request.POST["roof_orientation"]
         nominal_power = request.POST["nom_power"]
         real_energy_last_year = float(request.POST["real_last_year"])
-<<<<<<< Updated upstream
-        month = request.POST["month"]
-=======
-<<<<<<< HEAD
         # month = request.POST["month"]
-=======
-        month = request.POST["month"]
->>>>>>> 12fc38e45162b65749203f0c38aa69a6d8f07fe9
->>>>>>> Stashed changes
 
-        result = calcs.compare_energy_generation(coordinates, tilt, azimuth, nominal_power, real_energy_last_year, month)
+        result = calcs.compare_energy_generation(coordinates, tilt, azimuth, nominal_power, real_energy_last_year)
 
         if result:
             # return HttpResponse(suggestion)

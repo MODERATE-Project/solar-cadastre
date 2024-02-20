@@ -30,15 +30,7 @@ export class MapComponent implements OnInit {
   properties: any[];
 
   // Chart options for all charts
-<<<<<<< Updated upstream
-  view: [number, number] = [500, 300];
-=======
-<<<<<<< HEAD
   view: [number, number] = [550, 300];
-=======
-  view: [number, number] = [500, 300];
->>>>>>> 12fc38e45162b65749203f0c38aa69a6d8f07fe9
->>>>>>> Stashed changes
   legend: boolean = false;
   showLabels: boolean = true;
   animations: boolean = true;
@@ -53,18 +45,12 @@ export class MapComponent implements OnInit {
   colorScheme = {
     domain: ['#6A5ACD']
   } as any;
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
   customColors = [
     {
       name: 'Actual',
       value: '#ff8000'
     }
   ];
-=======
->>>>>>> 12fc38e45162b65749203f0c38aa69a6d8f07fe9
->>>>>>> Stashed changes
   gradient: boolean = true
 
   // Line chart axes and data
@@ -82,15 +68,9 @@ export class MapComponent implements OnInit {
   yAxisLabelBarMonth: string = 'Energy Production [kWh]';
   chartDataBarMonth: any[];
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
   // url_server = "80.211.131.194";
   url_server = "localhost";
 
-=======
->>>>>>> 12fc38e45162b65749203f0c38aa69a6d8f07fe9
->>>>>>> Stashed changes
   constructor(private renderer: Renderer2, private buildingServices: BuildingsService) { }
 
   //Get cookie value, indicating the name of the cookie
@@ -454,36 +434,13 @@ export class MapComponent implements OnInit {
 
               <label for="real_last_year">Energy generated last year [kWh]: </label>
               <input style="margin: 5px 0; width: 120px" type="number" step="any" min="0" name="real_last_year" required><br/>
-              
-              <label for="month">Month: </label>
-              <select name="month" style="margin: 5px 0">
-                <option value="1">January</option>
-                <option value="2">February</option>
-                <option value="3">March</option>
-                <option value="4">April</option>
-                <option value="5">May</option>
-                <option value="6">June</option>
-                <option value="7">July</option>
-                <option value="8">August</option>
-                <option value="9">September</option>
-                <option value="10">October</option>
-                <option value="11">November</option>
-                <option value="12">December</option>
-              </select><br/>
 
               <input style="margin: 5px 0" type="submit" value="Evaluate">
               <input style="margin: 5px 0" type="reset" value="Reset">
 
             </form>
             `
-<<<<<<< HEAD
             let form = document.querySelector("form#mainForm") as HTMLFormElement;
-=======
-            let form = document.querySelector("form");
-<<<<<<< Updated upstream
-=======
->>>>>>> 12fc38e45162b65749203f0c38aa69a6d8f07fe9
->>>>>>> Stashed changes
 
             // By default, the current month is selected
             const currentMonth = (new Date()).getMonth() + 1;
@@ -512,9 +469,6 @@ export class MapComponent implements OnInit {
                   // const result = await response.text();
                   // message.textContent = result;
                   const result = await response.json(); // Get JSON with response data
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
                   // console.log(result.generation_data);
                   
                   // Show messages
@@ -639,33 +593,6 @@ export class MapComponent implements OnInit {
                   document.getElementById("chart").style.justifyContent = "space-evenly";
                   this.chartDataBarYear = [...result.yearly_generation, {"name" : "Actual", "value" : formData.get("real_last_year")}]; // Add actual generation data
                   console.log(result.yearly_generation);
-=======
->>>>>>> Stashed changes
-                  console.log(result.generation_data);
-                  
-                  // Show messages
-                  message.textContent = "Evaluation result";
-                  const expectedP = document.createElement("p");
-                  expectedP.textContent = "Estimated yearly energy generation: " + result.estimated_generation + " kWh";
-                  calcDiv.appendChild(expectedP);
-                  const expectedMonthP = document.createElement("p");
-                  expectedMonthP.textContent = "For the selected month, highest energy generation is: " + result.max_month_generation + " kWh";
-                  calcDiv.appendChild(expectedMonthP);
-                  const suggestionP = document.createElement("p");
-                  suggestionP.textContent = result.suggestion;
-                  calcDiv.appendChild(suggestionP);
-
-                  // Set chart data
-                  this.chartDataLine = result.generation_data;
-                  document.getElementById("chart").style.display = "flex";
-                  document.getElementById("chart").style.justifyContent = "space-evenly";
-                  const pChartDate = document.querySelector("div#chart p#chart_date");
-                  pChartDate.innerHTML = result.generation_data[0].name; // Subtitle of the chart, containing year, day and month shown
-                  this.chartDataBarYear = result.yearly_generation;
-<<<<<<< Updated upstream
-=======
->>>>>>> 12fc38e45162b65749203f0c38aa69a6d8f07fe9
->>>>>>> Stashed changes
                   this.chartDataBarMonth = result.monthly_generation;
                 })
                 .catch((error) => {
