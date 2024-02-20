@@ -73,7 +73,15 @@ def get_pv(lat, long, tilt, azimuth, peak_power, years_period=None):
       print("Error! Try a different location. If the error persists, contact us.")
       return None
 
+<<<<<<< Updated upstream
 def compare_energy_generation(coordinates, tilt, azimuth, nominal_power, real_energy_last_year, month):
+=======
+<<<<<<< HEAD
+def compare_energy_generation(coordinates, tilt, azimuth, nominal_power, real_energy_last_year):
+=======
+def compare_energy_generation(coordinates, tilt, azimuth, nominal_power, real_energy_last_year, month):
+>>>>>>> 12fc38e45162b65749203f0c38aa69a6d8f07fe9
+>>>>>>> Stashed changes
     # Calculate estimated generation from satellite data
     estimated_generation = get_pv(coordinates[0], coordinates[1], tilt, azimuth, nominal_power,years_period=5)
     #estimated_generation_sum = sum(estimated_generation)/1000
@@ -88,8 +96,18 @@ def compare_energy_generation(coordinates, tilt, azimuth, nominal_power, real_en
     estimated_generation_daily_sum = estimated_generation.resample('D').sum()/1000
     estimated_generation_monthly_sum = estimated_generation.resample('M').sum()/1000
     result = find_highest_energy_day(estimated_generation_daily_sum)
+<<<<<<< Updated upstream
     # generation_data = get_all_month_data(result, estimated_generation)
     generation_data, day_generation = get_month_data(result, estimated_generation, int(month))
+=======
+<<<<<<< HEAD
+    generation_data, day_generation = get_all_month_data(result, estimated_generation)
+    # generation_data, day_generation = get_month_data(result, estimated_generation, int(month))
+=======
+    # generation_data = get_all_month_data(result, estimated_generation)
+    generation_data, day_generation = get_month_data(result, estimated_generation, int(month))
+>>>>>>> 12fc38e45162b65749203f0c38aa69a6d8f07fe9
+>>>>>>> Stashed changes
 
     average_yearly_values = estimated_generation.resample('Y').sum()/1000
     average_yearly_values.index = average_yearly_values.index.year
@@ -102,6 +120,13 @@ def compare_energy_generation(coordinates, tilt, azimuth, nominal_power, real_en
     monthly_generation = []
     for month in average_monthly_values:
         monthly_generation.append({"name" : get_month_name(int(month)), "value" : average_monthly_values[month]})
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+
+=======
+>>>>>>> 12fc38e45162b65749203f0c38aa69a6d8f07fe9
+>>>>>>> Stashed changes
     
     return {    
                 "suggestion" : suggestion,
@@ -125,14 +150,32 @@ def get_all_month_data(daysMaxGeneration, estimated_generation):
         JSON Array with the hourly generation of the day with maximum generation of each month, following the required format by ngx-charts.
     '''
     generation_data = []
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+    day_generation = []
+=======
+>>>>>>> 12fc38e45162b65749203f0c38aa69a6d8f07fe9
+>>>>>>> Stashed changes
     for month, data in daysMaxGeneration.items():
         highest_day_index = (estimated_generation.index.year == data['year']) & (estimated_generation.index.month == month) & (estimated_generation.index.day == data['day'])
         highest_day_profile = estimated_generation[highest_day_index]
         series = []
         for i in range(len(highest_day_profile.index.hour)):
             series.append({ "name" : int(highest_day_profile.index.hour[i]), "value" : float(highest_day_profile.values[i]) })
+<<<<<<< Updated upstream
         generation_data.append({ "name": f"Month {month}, Day {data['day']}", "series" : series })
     return generation_data
+=======
+<<<<<<< HEAD
+        generation_data.append({ "name": f"Year {data['year']}, Month {month}, Day {data['day']}", "series" : series })
+        day_generation.append(round(float(daysMaxGeneration[month]["energy"]), 1))
+    return generation_data, day_generation
+=======
+        generation_data.append({ "name": f"Month {month}, Day {data['day']}", "series" : series })
+    return generation_data
+>>>>>>> 12fc38e45162b65749203f0c38aa69a6d8f07fe9
+>>>>>>> Stashed changes
 
 
 def get_month_data(daysMaxGeneration, estimated_generation, month):
