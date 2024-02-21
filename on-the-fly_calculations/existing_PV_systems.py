@@ -141,8 +141,6 @@ plt.ylabel('Energy Production [kWh]')
 plt.show()
 
 
-
-
 # plot monthly averages within the period
 average_monthly_values = PV_generation_profile.groupby(PV_generation_profile.index.month).mean()
 average_monthly_values.plot.bar()   
@@ -151,9 +149,6 @@ plt.title('Montly means')
 plt.xlabel('Month')
 plt.ylabel('Energy Production kWh')
 plt.show()
-
-
-
 
 print("\nLet's proceed with an additional test: monthly clearsky day comparison.\n")
 PV_generation_daily_sum = PV_generation_profile.resample('D').sum()/1000
@@ -197,11 +192,6 @@ def get_season_color(month):
 
 # Call the function to find the highest energy day for each month
 result = find_highest_energy_day(PV_generation_daily_sum)
-
-
-
-
-
 
 # Plot only the highest energy day for each month
 plot_title = 'Hourly energy production profiles for highest energy days'

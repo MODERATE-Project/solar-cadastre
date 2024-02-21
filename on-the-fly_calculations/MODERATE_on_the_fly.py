@@ -79,9 +79,9 @@ def get_pv(lat, long, tilt, azimuth, peak_power):
 
 def get_consumption_profile_from_database(cons_type):
     # to be get right column from database
-    cons = []
-    for i in range(8760):
-        cons.append(random.randint(100,2000))
+    df = pd.read_csv('Consumption_profiles/DBprofiles.csv', index_col ='Time')*1000
+    cons = df[cons_type].values
+    print(cons)
     return cons
 
 def get_self_consumption_profile(consumption_profile, generation_profile):
@@ -180,7 +180,7 @@ building_coordinates = (latitude, longitude)  # Replace with coordinates from th
 pv_nominal_power = 1  # User input (to be validated with area available from pre-processed data)
 roof_tilt = 30  # User input
 roof_orientation = 0  # User input
-consumption_type = 'residential'  # Dropdown selection
+consumption_type = 'Residential 1'  # Dropdown selection
 yearly_consumption = 5000  # kWh User input
 yearly_pv_generation_per_kWp = 1200  # Average energy yield (from pre-processed data)
 yearly_pv_generation = yearly_pv_generation_per_kWp*pv_nominal_power
@@ -200,4 +200,27 @@ if analysis_results != None:
       print(f'{key}: {round(value,2)}')
 else:
   print('Some error occurred!')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
