@@ -58,8 +58,16 @@ def call_PVGIS_API(coordinates, tilt, azimuth, peak_power):
                                       
 
         #os.remove(pv_filename)
-        print("PV data ready.")
-        return sum(pv_weather_data['P'].values)
+        print("PV data ready.") 
+        
+        hours = pv_weather_data.index[:24] # Get hours
+
+        generation = []
+
+        for i in range(24):
+            generation.append({"name" : hours[i].split(":")[1][:2], "value" : pv_weather_data['P'].values[i]})
+
+        return sum(pv_weather_data['P'].values), generation
     
     except requests.exceptions.HTTPError as errh:
         print("HTTP Error:", errh)
@@ -75,23 +83,23 @@ def call_PVGIS_API(coordinates, tilt, azimuth, peak_power):
 
 def compare_energy_generation(coordinates, tilt, azimuth, nominal_power, real_energy_last_year):
     # Calculate estimated generation from satellite data
-    estimated_generation = calculate_estimated_generation(coordinates, tilt, azimuth, nominal_power)
+    estimated_generation, daily_generation = calculate_estimated_generation(coordinates, tilt, azimuth, nominal_power)
 
     # Compare estimated generation with real energy generation from last year
     if real_energy_last_year < estimated_generation * 0.9  or real_energy_last_year > estimated_generation * 1.1:
         # Provide suggestions to the user based on the comparison
         suggestions = generate_suggestions(estimated_generation, real_energy_last_year)
-        return suggestions
+        return suggestions, daily_generation
     else:
-        return "The system is performing well compared with expected data."
+        return "The system is performing well compared with expected data.", daily_generation
 
 
 # Function to calculate estimated energy generation from satellite data
 def calculate_estimated_generation(coordinates, tilt, azimuth, nominal_power):
     # Use satellite data and solar radiation models to estimate generation
     # Return the estimated energy generation
-    estimated_generation = call_PVGIS_API(coordinates, tilt, azimuth, nominal_power)
-    return estimated_generation
+    estimated_generation, daily_generation = call_PVGIS_API(coordinates, tilt, azimuth, nominal_power)
+    return estimated_generation, daily_generation
 
 
 # Function to generate suggestions based on the comparison

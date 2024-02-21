@@ -1,9 +1,110 @@
 <div class="mapa-container">
-  <div id="map"></div>
-  <div id="datos-container">
-    <!-- El contenido se llenará aquí -->
-    <h3>Click on a building on the map to show the data.</h3>
-    <div id="calculation">
+  <div id="izq">
+    <div id="map"></div>
+    <div id="chart">
+     
+      <div id="bar_chart_year">
+        <h3>Yearly cumulatives of a reference system</h3>
+        <ngx-charts-bar-vertical
+          [view]="view"
+          [scheme]="colorScheme"
+          [results]="chartDataBarYear"
+          [xAxis]="xAxis"
+          [yAxis]="yAxis"
+          [legend]="legend"
+          [showXAxisLabel]="showXAxisLabel"
+          [showYAxisLabel]="showYAxisLabel"
+          [xAxisLabel]="xAxisLabelBarYear"
+          [yAxisLabel]="yAxisLabelBarYear"
+          [customColors]="customColors"
+        >
+        </ngx-charts-bar-vertical>
+      </div>
+
+      <div id="bar_chart_month">
+        <h3>Monthly means</h3>
+        <ngx-charts-bar-vertical
+          [view]="view"
+          [scheme]="colorScheme"
+          [results]="chartDataBarMonth"
+          [xAxis]="xAxis"
+          [yAxis]="yAxis"
+          [legend]="legend"
+          [showXAxisLabel]="showXAxisLabel"
+          [showYAxisLabel]="showYAxisLabel"
+          [xAxisLabel]="xAxisLabelBarMonth"
+          [yAxisLabel]="yAxisLabelBarMonth"
+        >
+        </ngx-charts-bar-vertical>
+      </div>
+
+      <div id="line_chart_div">
+        <div id="month_selector">
+          <p>Let's proceed with an additional test: monthly clearsky day comparison.</p>
+          <p>Select the month you want to use for comparison.</p>
+          <form>
+            <label for="month">Month: </label>
+            <select name="month" style="margin: 5px 10px">
+              <option value="1">January</option>
+              <option value="2">February</option>
+              <option value="3">March</option>
+              <option value="4">April</option>
+              <option value="5">May</option>
+              <option value="6">June</option>
+              <option value="7">July</option>
+              <option value="8">August</option>
+              <option value="9">September</option>
+              <option value="10">October</option>
+              <option value="11">November</option>
+              <option value="12">December</option>
+            </select>
+            <input type="submit" value="Submit">
+          </form>
+        </div>
+        <div id="line_chart">
+          <h3>Hourly energy production profiles for highest energy day of the selected month</h3>
+          <p id="chart_date"></p>
+          <div>
+            <ngx-charts-line-chart
+              [view]="view"
+              [legend]="legend"
+              [animations]="animations"
+              [scheme]="colorScheme"
+              [gradient]="gradient"
+              [showXAxisLabel]="showXAxisLabel"
+              [showYAxisLabel]="showYAxisLabel"
+              [xAxis]="xAxis"
+              [yAxis]="yAxis"
+              [xAxisLabel]="xAxisLabelLine"
+              [yAxisLabel]="yAxisLabelLine"
+              [results]="chartDataLine"
+              [showGridLines]="showGridLines"
+            >
+            </ngx-charts-line-chart>
+            <div id="comparation">
+            </div>
+          </div>
+        </div>
+      </div>
+      
     </div>
+  </div>
+
+  
+  <div id="datos-container">
+
+    <div id="tablas">
+      <!-- El contenido se llenará aquí -->
+      <h3>Click on a building on the map to show the data.</h3>
+    </div>
+
+    <div id='calculation'>
+    </div>
+
+    <div id="buttons" style="margin-top: 30px; display: none">
+      <button id="showPotential" style="margin: 3px;">Potential calculation</button>
+      <button id="showEvaluation" style="margin: 3px;">PV system evaluation</button>
+    </div>
+
   </div>
 </div>

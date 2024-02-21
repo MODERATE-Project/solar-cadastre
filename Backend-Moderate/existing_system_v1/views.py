@@ -1,8 +1,9 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+import json
 
-from . import calcs
+from . import calcs_v3 as calcs
 
 # Create your views here.
 
@@ -52,8 +53,8 @@ def system_evaluation(request):
         Django's request object
 
     Returns:
-        HttpResponse with a sentence informing about the system performance or a message indicating that the POST
-        method must be used if another one is received.
+        JSONResponse containing the evaulation of the system or an HttpResponse with a message indicating that the POST
+        method must be used if another one is received or that an error occurred.
 
     Note:
         This function retrieves from the user input a location based on latitude and longitude.
@@ -75,13 +76,15 @@ def system_evaluation(request):
         azimuth = request.POST["roof_orientation"]
         nominal_power = request.POST["nom_power"]
         real_energy_last_year = float(request.POST["real_last_year"])
+        # month = request.POST["month"]
 
         result = calcs.compare_energy_generation(coordinates, tilt, azimuth, nominal_power, real_energy_last_year)
 
         if result:
-            return HttpResponse(result)
+            # return HttpResponse(suggestion)
+            return JsonResponse(result)
         else:
-            return HttpResponse("An error has occured")
+            return HttpResponse("An error has occured", status=404)
     
     else:
         return HttpResponse("Use POST method", status=405)

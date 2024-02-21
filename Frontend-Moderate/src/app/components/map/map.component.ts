@@ -5,6 +5,9 @@ import * as esri from 'esri-leaflet'
 import axios from 'axios';
 import { BuildingsService } from 'src/app/services/buildings.service';
 import 'proj4leaflet';
+import { schemeCategory10 } from 'd3-scale-chromatic';
+import * as d3 from 'd3'; 
+
 
 @Component({
   selector: 'app-map',
@@ -26,9 +29,51 @@ export class MapComponent implements OnInit {
   WMS_CADASTRE = 'https://ovc.catastro.meh.es/Cartografia/WMS/ServidorWMS.aspx?';
   properties: any[];
 
+  // Chart options for all charts
+  view: [number, number] = [550, 300];
+  legend: boolean = false;
+  showLabels: boolean = true;
+  animations: boolean = true;
+  xAxis: boolean = true;
+  yAxis: boolean = true;
+  showYAxisLabel: boolean = true;
+  showXAxisLabel: boolean = true;
+  showGridLines: boolean = true;
+  // colorScheme = {
+  //   domain: [...schemeCategory10, '#FFA07A', '#6A5ACD']
+  // } as any;
+  colorScheme = {
+    domain: ['#6A5ACD']
+  } as any;
+  customColors = [
+    {
+      name: 'Actual',
+      value: '#ff8000'
+    }
+  ];
+  gradient: boolean = true
+
+  // Line chart axes and data
+  xAxisLabelLine: string = 'Hour of Day';
+  yAxisLabelLine: string = 'Energy Production [kWh]';
+  chartDataLine: any[];
+
+  // Bar chart about yearly generation axes and data
+  xAxisLabelBarYear: string = 'Year';
+  yAxisLabelBarYear: string = 'Energy Production [kWh]';
+  chartDataBarYear: any[];
+
+  // Bar chart about monthly generation axes and data
+  xAxisLabelBarMonth: string = 'Month';
+  yAxisLabelBarMonth: string = 'Energy Production [kWh]';
+  chartDataBarMonth: any[];
+
+  // url_server = "80.211.131.194";
+  url_server = "localhost";
+
   constructor(private renderer: Renderer2, private buildingServices: BuildingsService) { }
 
-  //Get cookie value
+  //Get cookie value, indicating the name of the cookie
   getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -179,9 +224,14 @@ export class MapComponent implements OnInit {
           const streetName = response.data.address.Address;
           const useBuilding = nominatimResponse.data.type;
           // const useBuilding = "residential"
+
+          // Delete previous forms, results and charts
+          const calculation_div = document.querySelector("div#calculation");
+          this.renderer.setProperty(calculation_div, 'innerHTML', '');
+          document.getElementById("chart").style.display = "none";
           
           // Actualizar el contenido del div con los datos, incluyendo el nombre de la calle
-          const datosContainer = document.getElementById('datos-container');
+          const datosContainer = document.getElementById('tablas');
           this.renderer.setProperty(datosContainer, 'innerHTML', `
             <h2>${streetName}</h2>
             <br>
@@ -266,30 +316,23 @@ export class MapComponent implements OnInit {
             </table>
 
             <br>
-
-            <div id='calculation'>
-            </div>
-
-            <div id="buttons" style="margin-top: 30px">
-              <button id="showPotential">Potential calculation</button>
-              <button id="showEvaluation">PV system evaluation</button>
-            </div>
-
             `
           );
         })
         .then(async() => {
           console.log(latLng);
+          document.getElementById("buttons").style.display = "block";
           let btnPotential = document.querySelector("button#showPotential"); // Button to show potential form
           let btnEvaluation = document.querySelector("button#showEvaluation"); // Button to show evaluation form
           let calcDiv = document.querySelector("div#calculation"); // Container where forms and results are shown
           btnPotential.addEventListener("click", () => {
+            document.getElementById("chart").style.display = "none";
             // Show potential form
             calcDiv.innerHTML = `
 
               <h3>Potential calculation</h3>
               
-              <form method="POST" action='http://localhost:8000/potential/v2/result'>
+              <form method="POST" action='http://${this.url_server}:8000/potential/v2/result'>
 
                 <label for="roof_tilt">Roof tilt: </label>
                 <input style="margin: 5px 0; width: 120px" type="number" step="any" min="0" name="roof_tilt" required><br/>
@@ -324,7 +367,7 @@ export class MapComponent implements OnInit {
               const formData = new FormData(form); // Create an object containing the data inserted in the form
               formData.append("lat", latLng.lat); // Append to the formData object the latitude of the click
               formData.append("lon", latLng.lng); // Append to the formData object the longitude of the click
-              await fetch("http://localhost:8000/potential/v2/getCookie", { method: "GET", credentials: "include" }); // Get the CSRF cookie from backend
+              await fetch(`http://${this.url_server}:8000/potential/v2/getCookie`, { method: "GET", credentials: "include" }); // Get the CSRF cookie from backend
               form.style.display = "none";  // Hide form
               const message = document.querySelector("#calculation h3");
               message.textContent = "Processing..."; // Change text to indicate that the processing of data is being made
@@ -371,23 +414,25 @@ export class MapComponent implements OnInit {
             });
           });
           btnEvaluation.addEventListener("click", () => {
+            document.getElementById("chart").style.display = "none"; // Hide charts
             // Show evaluation form
             calcDiv.innerHTML = `
 
-            <h3>PV system evaluation</h3>
+            <h3>SolarCheckup Navigator</h3>
               
-            <form method="POST" action='http://localhost:8000/existing/v1/result'>
+            <form method="POST" action='http://${this.url_server}:8000/existing/v1/result' id=mainForm>
               
               <label for="roof_tilt">Roof tilt: </label>
-              <input style="margin: 5px 0; width: 120px" type="number" step="any" min="0" name="roof_tilt" required><br/>
+              <input style="margin: 5px 0; width: 120px" type="number" step="any" min="0" name="roof_tilt" value="20" required><br/>
 
               <label for="roof_orientation">Roof orientation: </label>
-              <input style="margin: 5px 0; width: 120px" type="number" step="any" name="roof_orientation" required><br/>
+              <input style="margin: 0px 0; width: 120px" type="number" step="any" name="roof_orientation"  value="0" required><br/>
+              <p style="margin: 0 10px 0 0; color: gray">(South=0, East=-90, North=180, West=90)</p><br/>
 
               <label for="nom_power">Nominal power: </label>
-              <input style="margin: 5px 0; width: 120px" type="number" step="any" min="0" name="nom_power" required><br/>
+              <input style="margin: 0px 0; width: 120px" type="number" step="any" min="0" name="nom_power"  value="1" required><br/>
 
-              <label for="real_last_year">Real energy generated last year: </label>
+              <label for="real_last_year">Energy generated last year [kWh]: </label>
               <input style="margin: 5px 0; width: 120px" type="number" step="any" min="0" name="real_last_year" required><br/>
 
               <input style="margin: 5px 0" type="submit" value="Evaluate">
@@ -395,14 +440,25 @@ export class MapComponent implements OnInit {
 
             </form>
             `
-            let form = document.querySelector("form");
+            let form = document.querySelector("form#mainForm") as HTMLFormElement;
+
+            // By default, the current month is selected
+            const currentMonth = (new Date()).getMonth() + 1;
+            const options = document.getElementsByTagName("option");
+            for (let option of options) {
+              if (parseInt(option.value) == currentMonth) {
+                option.setAttribute("selected", "true");
+                break;
+              }
+            }
+            
             form.addEventListener("submit", async(event) => {
               event.preventDefault(); // Prevent the form redirecting to another page
               const url = form.action; // Save in url variable the value of action attribute of the form
               const formData = new FormData(form); // Create an object containing the data inserted in the form
               formData.append("lat", latLng.lat); // Append to the formData object the latitude of the click
               formData.append("lon", latLng.lng); // Append to the formData object the longitude of the click
-              await fetch("http://localhost:8000/existing/v1/getCookie", { method: "GET", credentials: "include" }); // Get the CSRF cookie from backend
+              await fetch(`http://${this.url_server}:8000/existing/v1/getCookie`, { method: "GET", credentials: "include" }); // Get the CSRF cookie from backend
               form.style.display = "none";  // Hide form
               const message = document.querySelector("#calculation h3");
               message.textContent = "Processing..."; // Change text to indicate that the processing of data is being made
@@ -410,17 +466,152 @@ export class MapComponent implements OnInit {
               headers.append('X-CSRFToken', this.getCookie("csrftoken")) // Append the CSRF cookie to the headers object
               fetch(url, { method: "POST", headers: headers, body: formData, credentials: "include" }) // Obtain the KPIs from server with data inserted in the form
                 .then(async(response) => {
-                  const result = await response.text();
-                  message.textContent = result;
+                  // const result = await response.text();
+                  // message.textContent = result;
+                  const result = await response.json(); // Get JSON with response data
+                  // console.log(result.generation_data);
+                  
+                  // Show messages
+                  message.textContent = "SolarCheckup Navigator";
+                  const expectedP = document.createElement("p");
+                  expectedP.textContent = "Estimated yearly generation: " + result.estimated_generation + " kWh";
+                  calcDiv.appendChild(expectedP);
+                  const suggestionP = document.createElement("p");
+                  suggestionP.textContent = result.suggestion;
+                  suggestionP.setAttribute("style", "text-align: justify; text-justify: inter-word");
+                  calcDiv.appendChild(suggestionP);
+                  document.getElementById("month_selector").style.display = "block"; // Show month selector
+                  
+                  const comparationDiv = document.getElementById("comparation"); // Div where instructions are shown to evaluate the system
+                  let max_month_generation;
+                  document.getElementById("line_chart").style.display = "none"; // Hide line chart
+                  let monthForm = document.querySelector("#month_selector form") as HTMLFormElement;
+                  monthForm.addEventListener("submit", (event) => {
+                    event.preventDefault();
+                    const monthFormData = new FormData(monthForm); // Get selected month
+                    const month = parseInt(monthFormData.get("month").toString()); // Parse month to int
+                    max_month_generation = result.max_month_generation[month - 1]; // Get month data
+                    this.chartDataLine = [result.generation_data[month - 1]]; // Set chart data with month data
+                    const pChartDate = document.querySelector("div#chart p#chart_date");
+                    pChartDate.innerHTML = result.generation_data[month - 1].name; // Subtitle of the chart, containing year, day and month shown
+                    document.getElementById("line_chart").style.display = "block"; // Show line chart
+                    document.getElementById("month_selector").style.display = "none"; // Hide month selection
+                    // Show daily generation and instructions to compare
+                    comparationDiv.innerHTML = `
+                      <div style="margin-left: 20px">
+                        <p>For the selected month, highest energy generation is: ${max_month_generation} kWh</p>
+                        <p style="text-align: justify; text-justify: inter-word">
+                          Open your photovoltaic system monitoring app. Compare the data shown in SolarCheckup
+                          Navigator with the shape of the hourly generation profile in your app. Please choose a clear sky
+                          day.
+                        </p>
+                        <p>Are them similar?</p>
+                        <form id='radioForm'>
+                          <input type="radio" id="yes" name="compare" value="Yes">
+                          <label for="yes">Yes</label>
+                          <input type="radio" id="no" name="compare" value="No">
+                          <label for="no">No</label>
+                          <input style="margin-left: 10px" type="submit" value="Submit">
+                        </form>
+                      </div>
+                    `;
+
+                    let radioForm = document.querySelector("form#radioForm") as HTMLFormElement;
+                    radioForm.addEventListener("submit", (event) => {
+                      event.preventDefault();
+                      const radioFormData = new FormData(radioForm); // Get selection from yes/no
+                      if (radioFormData.get("compare") == "Yes") {
+                        // Show message of good performance
+                        comparationDiv.innerHTML = `
+                          <p style="text-align: justify; text-justify: inter-word">
+                            Looks like your system is performing well. Try to repeat this
+                            check monthly. If the monthly generation is very different with respect to the one expected, it
+                            can be that your system is underperforming. Repeat this test and consider contacting a solar
+                            expert for a field inspection.
+                          </p>
+                        `
+                      } else {
+                        // Show problem selection with images
+                        comparationDiv.innerHTML = `
+                          <div style="margin-left: 20px">
+                            <p>If the curves are different you may have one of the following issues.</p>
+                            <p>Select one for obtaining a suggestion:</p>
+                            <form id="problemForm">
+
+                              <input type="radio" id="1" name="problem" value="1">
+                              <label for="1">Close shading</label><br/>
+                              <img style="width: 250px; margin-bottom: 20px" src="../assets/img/problem_1.png"/><br/>
+
+                              <input type="radio" id="2" name="problem" value="2">
+                              <label for="2">Far shading (e. g. mountains)</label><br/>
+                              <img style="width: 250px; margin-bottom: 20px" src="../assets/img/problem_1.png"/><br/>
+
+                              <input type="radio" id="3" name="problem" value="3">
+                              <label for="3">Soiling</label><br/>
+                              <img style="width: 250px; margin-bottom: 20px" src="../assets/img/problem_1.png"/><br/>
+
+                              <input type="radio" id="4" name="problem" value="4">
+                              <label for="4">Modules broken/disconnected</label><br/>
+                              <img style="width: 250px; margin-bottom: 20px" src="../assets/img/problem_1.png"/><br/>
+
+                              <input type="radio" id="5" name="problem" value="5">
+                              <label for="5">Overheating</label><br/>
+                              <img style="width: 250px; margin-bottom: 20px" src="../assets/img/problem_1.png"/><br/>
+
+                              <input type="radio" id="6" name="problem" value="6">
+                              <label for="6">Snow</label><br/>
+                              <img style="width: 250px; margin-bottom: 20px" src="../assets/img/problem_1.png"/><br/>
+
+                              <input type="radio" id="7" name="problem" value="7">
+                              <label for="7">Inverter failure</label><br/>
+                              <img style="width: 250px; margin-bottom: 20px" src="../assets/img/problem_1.png"/><br/>
+
+                              <input type="submit" value="Submit">
+
+                            </form>
+                          </div>
+                        `
+
+                        const problemForm = document.querySelector("form#problemForm") as HTMLFormElement;
+                        problemForm.addEventListener("submit", (event) => {
+                            event.preventDefault();
+                            const problemFormData = new FormData(problemForm);
+                            const selectedProblem = problemFormData.get("problem"); // Get problem selection
+                            // Show problem selection and suggestion for it
+                            comparationDiv.innerHTML = `
+                              <div style="margin-left: 20px">
+                                <p>Choice ${selectedProblem}, Suggestion ${selectedProblem}</p>
+                              </div>
+                            `
+                        });
+                      }
+                    });
+                  });
+
+                  // Set chart data
+                  document.getElementById("chart").style.display = "flex";
+                  document.getElementById("chart").style.justifyContent = "space-evenly";
+                  this.chartDataBarYear = [...result.yearly_generation, {"name" : "Actual", "value" : formData.get("real_last_year")}]; // Add actual generation data
+                  console.log(result.yearly_generation);
+                  this.chartDataBarMonth = result.monthly_generation;
                 })
-                .catch(() => {
+                .catch((error) => {
+                  console.log(error);
                   message.textContent = "Error";
                 })
                 .finally(() => { // Show a button to return to form on success and on error
                   const button = document.createElement("button");
                   button.addEventListener("click", () => { // Button behavior
                     form.style.display = "block"; // Show form again
+                    document.getElementById("chart").style.display = "none";
                     calcDiv.removeChild(button); // Remove button
+
+                    // Remove all messages displayed. These are the suggestion and the expected generations
+                    const pDelete = calcDiv.getElementsByTagName("p"); 
+                    for (let i = pDelete.length - 1; i >= 0; i--) {
+                      const pNode = pDelete[i];
+                      calcDiv.removeChild(pNode);
+                    }
                     message.textContent = "PV system evaluation";
                   });
                   button.textContent = "Back to form";
