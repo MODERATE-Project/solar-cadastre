@@ -325,14 +325,16 @@ export class MapComponent implements OnInit {
           let btnPotential = document.querySelector("button#showPotential"); // Button to show potential form
           let btnEvaluation = document.querySelector("button#showEvaluation"); // Button to show evaluation form
           let calcDiv = document.querySelector("div#calculation"); // Container where forms and results are shown
-          btnPotential.addEventListener("click", () => {
+          
+          // Solar potential
+          btnPotential.addEventListener("click", async() => {
             document.getElementById("chart").style.display = "none";
             // Show potential form
             calcDiv.innerHTML = `
 
               <h3>Potential calculation</h3>
               
-              <form method="POST" action='http://${this.url_server}:8000/potential/v2/result'>
+              <form method="POST" action='http://${this.url_server}:8000/potential/v2/result' id="potentialMainForm">
 
                 <label for="roof_tilt">Roof tilt: </label>
                 <input style="margin: 5px 0; width: 120px" type="number" step="any" min="0" name="roof_tilt" required><br/>
@@ -355,12 +357,32 @@ export class MapComponent implements OnInit {
                 <label for="pv_cost">PV cost [€/kWp]: </label>
                 <input style="margin: 5px 0; width: 120px" type="number" step="0.01" min="0" name="pv_cost" required><br/>
 
+                <label for="profile">Profile: </label>
+                <select name="profile" style="margin: 5px 10px" required>
+                </select><br/>
+
                 <input style="margin: 5px 0" type="submit" value="Calculate">
                 <input style="margin: 5px 0" type="reset" value="Reset">
 
               </form>
             `;
-            let form = document.querySelector("form");
+            let form = document.querySelector("form#potentialMainForm") as HTMLFormElement;
+
+             // Get profile names from database
+            const responseProfiles = await fetch(`http://${this.url_server}:8000/potential/v2/getProfiles`, { method: "GET" });
+            const resultProfiles = await responseProfiles.json();
+            const profiles = resultProfiles.profiles;
+
+            const selectProfile = form.querySelector("select"); // Select element of form
+
+            // Add profiles to dropdown (select element)
+            for (let profile of profiles) {
+              let optionNode = document.createElement("option");
+              optionNode.setAttribute("value", profile);
+              optionNode.textContent = profile;
+              selectProfile.appendChild(optionNode);
+            }
+
             form.addEventListener("submit", async(event) => { // Actions to perform when submitting the form
               event.preventDefault(); // Prevent the form redirecting to another page
               const url = form.action; // Save in url variable the value of action attribute of the form
@@ -378,7 +400,9 @@ export class MapComponent implements OnInit {
                   const data = await response.json();
                   const table = document.createElement("table");
                   table.setAttribute("style", "border: 1px solid; width: 100%");
-                  for (const key in data) {  // Create table with results
+
+                  // Create table with results
+                  for (const key in data) { 
                     const tr = document.createElement("tr");
                     const tdKey = document.createElement("td");
                     const tdValue = document.createElement("td");
@@ -413,6 +437,8 @@ export class MapComponent implements OnInit {
                 });
             });
           });
+
+          // Existing system evaluation
           btnEvaluation.addEventListener("click", () => {
             document.getElementById("chart").style.display = "none"; // Hide charts
             // Show evaluation form
@@ -420,7 +446,7 @@ export class MapComponent implements OnInit {
 
             <h3>SolarCheckup Navigator</h3>
               
-            <form method="POST" action='http://${this.url_server}:8000/existing/v1/result' id=mainForm>
+            <form method="POST" action='http://${this.url_server}:8000/existing/v1/result' id="existingMainForm">
               
               <label for="roof_tilt">Roof tilt: </label>
               <input style="margin: 5px 0; width: 120px" type="number" step="any" min="0" name="roof_tilt" value="20" required><br/>
@@ -440,7 +466,7 @@ export class MapComponent implements OnInit {
 
             </form>
             `
-            let form = document.querySelector("form#mainForm") as HTMLFormElement;
+            let form = document.querySelector("form#existingMainForm") as HTMLFormElement;
 
             // By default, the current month is selected
             const currentMonth = (new Date()).getMonth() + 1;
