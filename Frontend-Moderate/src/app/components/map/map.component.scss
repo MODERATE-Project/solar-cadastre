@@ -15,26 +15,5 @@
 }
 
 #izq {
-    display: flex;
-    flex-direction: column;
     width: 80%;
-}
-
-#chart {
-    display: none;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-}
-
-#line_chart > div {
-    display: flex;
-}
-
-#line_chart > div p {
-    max-width: 500px;
-}
-
-#comparation {
-    width: 500px
 }

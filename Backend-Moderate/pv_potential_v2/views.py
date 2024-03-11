@@ -69,6 +69,7 @@ def getGeoserverFeatures(lat, lon):
     response = requests.get(url, headers=headers, params=params)
     if response.status_code == 200:
         try:
+            print(response.json())
             return response.json()["features"][0]["properties"]
         except:
             raise ValueError("Not valid coordinates")
@@ -156,7 +157,7 @@ def result(request):
 
         # Coordinates
         latitude = request.POST["lat"]   # From click
-        longitude = request.POST["lon"]  # From click
+        longitude = request.POST["lon"] # From click
         building_coordinates = (latitude, longitude)
 
         # Data from form
@@ -174,11 +175,11 @@ def result(request):
         x_coord, y_coord = transformer.transform(latitude, longitude)
 
         # Retrieve features from GeoServer
-        features = getGeoserverFeatures(x_coord, y_coord);
+        features = getGeoserverFeatures(latitude, longitude);
 
         # Needed features from GeoServer
         yearly_pv_generation_per_kWp = float(features["average_yi"])   # GeoServer
-        yearly_pv_generation_per_kWp = 1200 # EXAMPLE. Data not available in GeoServer
+        # yearly_pv_generation_per_kWp = 1200 # EXAMPLE. Data not available in GeoServer
         yearly_pv_generation = yearly_pv_generation_per_kWp * pv_nominal_power
         # consumption_type = features["building_u"]   # GeoServer Default: residential
 
