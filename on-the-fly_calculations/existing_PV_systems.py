@@ -177,7 +177,6 @@ def get_season_color(month):
     summer_months = [6,7,8]
     autumn_months = [9,10,11]
     
-    
     # Determine the season based on the month
     if month in winter_months:
         return 'blue'

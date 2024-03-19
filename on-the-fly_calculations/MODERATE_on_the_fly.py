@@ -56,11 +56,9 @@ def get_pv(lat, long, tilt, azimuth, peak_power):
         pv_header_no_of_rows = 10
         pv_footer_no_of_rows = 10
 
-
         pv_weather_data = pd.read_csv(pv_filename, skiprows=pv_header_no_of_rows, skipfooter=pv_footer_no_of_rows,
                                       index_col=0, header=0)
                                       
-
         #os.remove(pv_filename)
         print("PV data ready.")
         return pv_weather_data['P'].values
@@ -81,7 +79,6 @@ def get_consumption_profile_from_database(cons_type):
     # to be get right column from database
     df = pd.read_csv('Consumption_profiles/DBprofiles.csv', index_col ='Time')*1000
     cons = df[cons_type].values
-    print(cons)
     return cons
 
 def get_self_consumption_profile(consumption_profile, generation_profile):
@@ -138,6 +135,7 @@ def techno_economic_analysis(lat_lon, nominal_power, roof_tilt, roof_orientation
     yearly_maintenance =  nominal_power*yearly_maintenance
 
     generation_profile = get_pv(lat_lon[0], lat_lon[1], roof_tilt, roof_orientation, nominal_power)
+    
     if isinstance(generation_profile, numpy.ndarray):
 
         rescaled_generation_profile = generation_profile*yearly_pv_generation/sum(generation_profile)
@@ -152,7 +150,8 @@ def techno_economic_analysis(lat_lon, nominal_power, roof_tilt, roof_orientation
         self_sufficiency = sum(self_consumption_profile)/sum(rescaled_consumption_profile)
         yearly_generation = sum(rescaled_generation_profile)
         initial_investment = nominal_power*cost_of_PV
-
+        
+        # calculate the yearly savigs of the PV system summing savigns, earnings ad subtracting the yearly maintenance
         yearly_earnings = yearly_savings+yearly_earnings_sold-yearly_maintenance
 
         #roi = get_roi(self_consumption_profile, sold_energy_profile, cost_of_electricity, value_of_sold_electricity)
@@ -168,28 +167,43 @@ def techno_economic_analysis(lat_lon, nominal_power, roof_tilt, roof_orientation
           'total_yearly_earnings [€]': yearly_earnings,
           'roi [%]': roi
         }
-
-        return results
+        
+        df_monthly_data = pd.DataFrame()
+        df_monthly_data['PV [kWh]'] = rescaled_generation_profile
+        df_monthly_data['Consumption [kWh]'] = rescaled_generation_profile
+        df_monthly_data['Self-consumption [kWh]'] = self_consumption_profile
+        df_monthly_data['Sold energy [kWh]'] = sold_energy_profile
+        year=2023
+        df_monthly_data.index = pd.date_range(start=f'{year}-01-01', end=f'{year}-12-31 23:00:00', freq='H')
+        
+        return results, df_monthly_data
     else:
         return
 
-# Example usage for non-existing buildings
+# Example usage for non-existing systems
+
+# INPUTS from the map
 latitude = 47.114
 longitude =  9.111
 building_coordinates = (latitude, longitude)  # Replace with coordinates from the map
-pv_nominal_power = 1  # User input (to be validated with area available from pre-processed data)
+yearly_pv_generation_per_kWp = 1200  # Average energy yield (from pre-processed data)
+
+# User inputs
+pv_nominal_power = 3  # User input (to be validated with area available from pre-processed data)
 roof_tilt = 30  # User input
 roof_orientation = 0  # User input
 consumption_type = 'Residential 1'  # Dropdown selection
-yearly_consumption = 5000  # kWh User input
-yearly_pv_generation_per_kWp = 1200  # Average energy yield (from pre-processed data)
-yearly_pv_generation = yearly_pv_generation_per_kWp*pv_nominal_power
+yearly_consumption = 2700  # kWh User input
+
 cost_of_electricity = 0.3  # €/kWh User input with default values already set
 value_of_sold_electricity = 0.1  # €/kWh User input with default values already set
 cost_of_PV = 2000   # €/kWp  User input with default values already set
 
+
 print('Techno-economic calculation...\n')
-analysis_results = techno_economic_analysis(
+yearly_pv_generation = yearly_pv_generation_per_kWp*pv_nominal_power
+
+analysis_results, monthly_df = techno_economic_analysis(
     building_coordinates, pv_nominal_power, roof_tilt, roof_orientation, consumption_type, yearly_consumption, yearly_pv_generation, cost_of_electricity, value_of_sold_electricity, cost_of_PV
 	)
 
@@ -202,7 +216,7 @@ else:
   print('Some error occurred!')
 
 
-
+monthly_df.plot.bar()
 
 
 
