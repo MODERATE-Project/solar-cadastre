@@ -2,9 +2,11 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 
-from . import calcs
+from . import calcs_v2 as calcs
 from pyproj import Transformer
 import requests
+import pandas as pd
+import json
 
 # Create your views here.
 
@@ -67,6 +69,7 @@ def getGeoserverFeatures(lat, lon):
     response = requests.get(url, headers=headers, params=params)
     if response.status_code == 200:
         try:
+            print(response.json())
             return response.json()["features"][0]["properties"]
         except:
             raise ValueError("Not valid coordinates")
@@ -76,7 +79,7 @@ def getGeoserverFeatures(lat, lon):
 @ensure_csrf_cookie # For the response to send the CSRF Token as a Cookie in a header
 def getCookie(request):
     '''
-    Retrieves CSRF cookie from backend.
+    Sends CSRF cookie to client
 
     Args:
         Django's request object
@@ -89,6 +92,30 @@ def getCookie(request):
         and obtain in the response the CSRF cookie.
     '''
     return HttpResponse("Get cookie")
+
+
+def getProfiles(request):
+    '''
+    Sends to the user a list containing the different generation profiles registered in a CSV file.
+
+    Args:
+        Django's request object
+
+    Returns:
+        JSON Response: JSON array containing the generation profiles' names.
+
+
+    Note:
+        A column in the CSV contains the hour of day when a certain generation value is registered.
+        That column is indicated as the index of the data frame and it is not returned.
+        A variable contains the current path of the CSV file
+    '''
+    
+    csv_profiles_path = "pv_potential_v2/Consumption_profiles/DBprofiles.csv" # CSV file path
+    df = pd.read_csv(csv_profiles_path, index_col="Time")   # The "Time" column is indicated to be the index column of the DataFrame.
+                                                            # That means that that column name is not returned, as it is not a column containing data.
+    profiles = df.columns.values.tolist()
+    return JsonResponse({"profiles" : profiles})
 
 
 #Calculates the photovoltaic potential with a set of inputs
@@ -114,7 +141,7 @@ def result(request):
         The location indicates a building.
         Apart from that, it retrieves from the request (about the building) the roof tilt, the roof orientation,
         the nominal power of the PV,  the yearly electrical consumption, the cost of electricity,
-        the value of sold electricity and the cost of the PV. Moreover, the function retrieves from
+        the value of sold electricity, the cost of the PV and the generation profile. Moreover, the function retrieves from
         GeoServer the building usage and its yearly PV generation (currently it is fixed to an example value
         as that information is not available).
         With that infomation, a function is called to calculate the KPIs. That function is in calcs.py
@@ -130,7 +157,7 @@ def result(request):
 
         # Coordinates
         latitude = request.POST["lat"]   # From click
-        longitude = request.POST["lon"]  # From click
+        longitude = request.POST["lon"] # From click
         building_coordinates = (latitude, longitude)
 
         # Data from form
@@ -141,19 +168,20 @@ def result(request):
         cost_of_electricity = float(request.POST["electricity_cost"])  
         value_of_sold_electricity = float(request.POST["value_sold_electricity"])
         cost_of_PV = float(request.POST["pv_cost"])
+        consumption_type = request.POST["profile"]
 
         # Transform coordinates to EPSG:25830 reference system, used by GeoServer
         transformer = Transformer.from_crs("EPSG:4326", "EPSG:25830")
         x_coord, y_coord = transformer.transform(latitude, longitude)
 
         # Retrieve features from GeoServer
-        features = getGeoserverFeatures(x_coord, y_coord);
+        features = getGeoserverFeatures(latitude, longitude);
 
         # Needed features from GeoServer
         yearly_pv_generation_per_kWp = float(features["average_yi"])   # GeoServer
-        yearly_pv_generation_per_kWp = 1200 # EXAMPLE. Data not available in GeoServer
+        # yearly_pv_generation_per_kWp = 1200 # EXAMPLE. Data not available in GeoServer
         yearly_pv_generation = yearly_pv_generation_per_kWp * pv_nominal_power
-        consumption_type = features["building_u"]   # GeoServer Default: residential
+        # consumption_type = features["building_u"]   # GeoServer Default: residential
 
         # Example data
         # latitude = 46.1

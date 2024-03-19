@@ -11,7 +11,7 @@ export class BuildingsService {
 
   constructor(private http: HttpClient) { }
 
-  getBuildingsFeature(lat: number, lon: number): Promise<any>{
+  getBuildingsFeature(lon: number, lat: number): Promise<any>{
     const header = new HttpHeaders({ Accept: 'application/xml'});
     const params = new HttpParams()
       .set('service', 'wfs')
@@ -19,7 +19,7 @@ export class BuildingsService {
       .set('request', 'getFeature')
       .set('typeName', 'GeoModerate:cadastral_buildings')
       .set('maxFeatures', 50)
-      .set('cql_filter', `INTERSECTS(geom, POINT(${lat} ${lon}))`)
+      .set('cql_filter', `INTERSECTS(geom, POINT(${lon} ${lat}))`)
       .set('outputFormat', 'application/json');
     
     const options = {
