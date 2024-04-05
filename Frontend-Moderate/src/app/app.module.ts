@@ -12,6 +12,11 @@ import { CalculateDataComponent } from './components/calculate-data/calculate-da
 import { TablesComponent } from './components/tables/tables.component';
 import { ShowTablesDirective } from './directives/show-tables.directive';
 import { ShowCalculationsDirective } from './directives/show-calculations.directive';
+import { TableSumComponent } from './components/table-sum/table-sum.component';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { CommonModule } from '@angular/common';
+import { SolarPotentialComponent } from './components/solar-potential/solar-potential.component';
+import { ExistingSystemComponent } from './components/existing-system/existing-system.component';
 
 
 @NgModule({
@@ -22,12 +27,16 @@ import { ShowCalculationsDirective } from './directives/show-calculations.direct
     TablesComponent,
     ShowTablesDirective,
     ShowCalculationsDirective,
+    TableSumComponent,
+    SolarPotentialComponent,
+    ExistingSystemComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    NgxChartsModule
+    NgxChartsModule,
+    NgSelectModule
   ],
   providers: [BuildingsService, CoordinatesService],
   bootstrap: [AppComponent]

@@ -1,0 +1,81 @@
+<div id="form">
+    <h2 style="font-weight: 700; color: #051B39">Calculate energy potential</h2>
+    <p *ngIf="visible" style="color: #627A9C">Complete the following information</p>   
+
+      <form method="POST" action='http://{{url_server}}:8000/potential/v2/result' id="potentialMainForm">
+
+        <div class="row row-cols-3">
+          <div class="form-group col-xs">
+            <label for="roof_tilt">Roof tilt: </label>
+            <input class="form-control" type="number" step="any" min="0"  max="90" name="roof_tilt" value="30" required>
+          </div>
+
+          <div class="form-group col-xs">
+            <label for="roof_orientation">Roof orientation: </label>
+            <input class="form-control" type="number" step="any" min="-180" max="180" name="roof_orientation" value="0" required>
+            <!-- <p style="margin: 0 10px 0 0; col-xsor: gray">(South=0, East=-90, North=180, West=90)</p> -->
+          </div>
+
+          <div class="form-group col-xs">
+            <label for="nom_power">Nominal power [kWp]: </label>
+            <input class="form-control" type="number" step="any" min="0" name="nom_power" value="1" required>
+          </div>
+        </div>
+        
+        <div class="row row-cols-3">
+          <div class="form-group col">
+            <label for="yearly_consumption">Yearly consumption [kWh]: </label>
+            <input class="form-control" type="number" step="any" min="0" name="yearly_consumption" value="2700" required>
+          </div>
+
+          <div class="form-group col">
+            <label for="electricity_cost">Electricity cost [€/kWh]: </label>
+            <input class="form-control" type="number" step="0.01" min="0" name="electricity_cost" value="0.3" required>
+          </div>
+
+          <div class="form-group col">
+            <label for="value_sold_electricity">Value of sold electricity [€/kWh]: </label>
+            <input class="form-control" type="number" step="0.01" min="0" name="value_sold_electricity" value="0.1" required>
+          </div>
+        </div>
+
+        <div class="row row-cols-3">
+          <div class="form-group col">
+            <label for="pv_cost">PV cost [€/kWp]: </label>
+            <input class="form-control" type="number" step="0.01" min="0" name="pv_cost" value="2000" required><br/>
+          </div>
+          
+          <div class="form-group col">
+            <label for="profile">Profile: </label>
+            <select class="form-select" name="profile">
+            </select>
+          </div>
+        </div>
+
+        <button class="btn" type="submit">Calculate</button>
+        <!-- <input style="margin: 5px 0" type="reset" value="Reset"> -->
+
+      </form>
+</div>
+
+<div id="results">
+
+</div>
+
+<div id="chart">
+
+    <h5 style="font-weight: 700; color: #0D5D93">Monthly data</h5>
+
+    <ngx-charts-bar-vertical-2d
+    [scheme]="colorScheme"
+    [results]="chartDataPotential"
+    [xAxis]="xAxis"
+    [yAxis]="yAxis"
+    [legend]="legend"
+    [showXAxisLabel]="showXAxisLabel"
+    [showYAxisLabel]="showYAxisLabel"
+    [xAxisLabel]="xAxisPotential"
+    [yAxisLabel]="yAxisPotential"
+  >
+    </ngx-charts-bar-vertical-2d>
+</div>

@@ -1,0 +1,36 @@
+#charts {
+    display: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+#line_chart > div p {
+    max-width: 500px;
+}
+
+input, select {
+    background-color: #052D651A;
+    color: #052D65;
+    font-weight: 700;
+}
+
+button {
+    background-color: #052D65;
+    color: white;
+    float: right;
+}
+
+button {
+    background-color: #052D65;
+    color: white;
+    float: right;
+}
+
+input[name="real_last_year"] {
+    width: 66%;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}

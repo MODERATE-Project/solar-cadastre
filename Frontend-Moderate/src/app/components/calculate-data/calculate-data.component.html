@@ -1,6 +1,23 @@
 <div id='calculation'>
 </div>
 
+<div id="potential_chart">
+  <ngx-charts-bar-vertical-2d
+  [view]="view"
+  [scheme]="colorScheme"
+  [results]="chartDataPotential"
+  [xAxis]="xAxis"
+  [yAxis]="yAxis"
+  [legend]="legend"
+  [showXAxisLabel]="showXAxisLabel"
+  [showYAxisLabel]="showYAxisLabel"
+  [xAxisLabel]="xAxisPotential"
+  [yAxisLabel]="yAxisPotential"
+>
+  </ngx-charts-bar-vertical-2d>
+</div>
+
+
 <div id="chart">
   <div id="bar_chart_year">
     <h3>Yearly cumulatives of a reference system</h3>
@@ -35,6 +52,10 @@
       [yAxisLabel]="yAxisLabelBarMonth"
     >
     </ngx-charts-bar-vertical>
+  </div>
+
+  <div id="results">
+
   </div>
 
   <div id="line_chart_div">

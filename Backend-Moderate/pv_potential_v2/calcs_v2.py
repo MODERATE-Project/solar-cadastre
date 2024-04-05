@@ -163,9 +163,29 @@ def techno_economic_analysis(lat_lon, nominal_power, roof_tilt, roof_orientation
           'yearly_savings [€]': yearly_savings,
           'yearly_earnings_sold [€]': yearly_earnings_sold,
           'total_yearly_earnings [€]': yearly_earnings,
-          'roi [%]': roi
+          'roi [%]': roi,
         }
 
-        return results
+        df_monthly_data = pd.DataFrame()
+        df_monthly_data['PV [kWh]'] = rescaled_generation_profile
+        df_monthly_data['Consumption [kWh]'] = rescaled_generation_profile
+        df_monthly_data['Self-consumption [kWh]'] = self_consumption_profile
+        df_monthly_data['Sold energy [kWh]'] = sold_energy_profile
+        year=2023
+        df_monthly_data.index = pd.date_range(start=f'{year}-01-01', end=f'{year}-12-31 23:00:00', freq='H')
+
+        values = df_monthly_data.groupby(df_monthly_data.index.month).sum()
+        values = values.drop("Consumption [kWh]", axis=1)
+
+        list_month = [{"name" : "January", "series" : []}, {"name" : "Feburary", "series" : []}, {"name" : "March", "series" : []}, {"name" : "April", "series" : []},
+                    {"name" : "May", "series" : []}, {"name" : "June", "series" : []}, {"name" : "July", "series" : []}, {"name" : "August", "series" : []},
+                    {"name" : "September", "series" : []}, {"name" : "October", "series" : []}, {"name" : "November", "series" : []}, {"name" : "December", "series" : []}]
+
+        for kpi, data in values.items():
+            for month, value in zip(list_month, data):
+                month["series"].append({"name" : kpi, "value" : value})
+
+        return results, list_month
+
     else:
         return

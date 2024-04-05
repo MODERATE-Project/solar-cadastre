@@ -9,6 +9,12 @@ import { ShowTablesDirective } from 'src/app/directives/show-tables.directive';
 import { ShowCalculationsDirective } from 'src/app/directives/show-calculations.directive';
 import { CalculateDataComponent } from '../calculate-data/calculate-data.component';
 import "@geoman-io/leaflet-geoman-free";
+import { BuildingsService } from 'src/app/services/buildings.service';
+import { TableSumComponent } from '../table-sum/table-sum.component';
+import { PolygonService } from 'src/app/services/polygon.service';
+import { SolarPotentialComponent } from '../solar-potential/solar-potential.component';
+import { ExistingSystemComponent } from '../existing-system/existing-system.component';
+
 
 
 @Component({
@@ -38,7 +44,7 @@ export class MapComponent implements OnInit {
   WMS_CADASTRE = 'https://ovc.catastro.meh.es/Cartografia/WMS/ServidorWMS.aspx?';
   properties: any[];
 
-  constructor(private coordinatesServices: CoordinatesService) { }
+  constructor(private coordinatesServices: CoordinatesService, private buildingServices: BuildingsService, private polygonService: PolygonService) { }
 
   //Get cookie value, indicating the name of the cookie
 
@@ -47,16 +53,21 @@ export class MapComponent implements OnInit {
   }
 
   public activateCalculations() {
-    // document.querySelector("div#map").setAttribute("style", "display: none");
-    // document.querySelector("div#calculations").setAttribute("style", "display: block");
-    // this.showCalculations.viewContainerRef.clear();
-    // this.showCalculations.viewContainerRef.createComponent(CalculateDataComponent);
-    // this.visibleBack = true;
-
     this.showTables.viewContainerRef.clear();
     this.showTables.viewContainerRef.createComponent(CalculateDataComponent);
     this.visibleLink = false;
+  }
 
+  public activatePotential() {
+    this.showTables.viewContainerRef.clear();
+    this.showTables.viewContainerRef.createComponent(SolarPotentialComponent);
+    this.visibleLink = false;
+  }
+
+  public activateExisting() {
+    this.showTables.viewContainerRef.clear();
+    this.showTables.viewContainerRef.createComponent(ExistingSystemComponent);
+    this.visibleLink = false;
   }
 
   public disableCalculations() {
@@ -140,36 +151,36 @@ export class MapComponent implements OnInit {
 
     L.control.layers(baseMaps, overlayMaps).addTo(this.map);   
 
-    this.map.on('click', async (event) => {
+    // this.map.on('click', async (event) => {
 
-      this.visibleLink = false;
+    //   this.visibleLink = false;
 
-      if (this.marker) {
-        this.marker.setLatLng(event.latlng);
-        console.log(event.latlng);
-      } else {
-        this.marker = L.marker(event.latlng, { icon: customIcon }).addTo(this.map);
-      }
+    //   if (this.marker) {
+    //     this.marker.setLatLng(event.latlng);
+    //     console.log(event.latlng);
+    //   } else {
+    //     this.marker = L.marker(event.latlng, { icon: customIcon }).addTo(this.map);
+    //   }
 
-      const latLng = event.latlng;
-      // this.coordinatesServices.sendCoordinates(latLng)
-      this.coordinatesServices.setCoordinates(latLng);
+    //   const latLng = event.latlng;
+    //   // this.coordinatesServices.sendCoordinates(latLng)
+    //   this.coordinatesServices.setCoordinates(latLng);
 
-      this.visibleMessage = false;
+    //   this.visibleMessage = false;
 
-      this.showTables.viewContainerRef.clear();
-      this.showTables.viewContainerRef.createComponent(TablesComponent);
+    //   this.showTables.viewContainerRef.clear();
+    //   this.showTables.viewContainerRef.createComponent(TablesComponent);
 
-      this.visibleLink = true;
+    //   this.visibleLink = true;
 
       
-      /*const popup = L.popup()
-        .setLatLng(latLng)
-        .setContent('You click in this position')
-        .openOn(this.map)*/
-      // Puedes realizar cualquier acción adicional con las coordenadas del clic aquí
+    //   /*const popup = L.popup()
+    //     .setLatLng(latLng)
+    //     .setContent('You click in this position')
+    //     .openOn(this.map)*/
+    //   // Puedes realizar cualquier acción adicional con las coordenadas del clic aquí
 
-      });
+    //   });
 
     // search widget
     const token = 'AAPK5405a7c87b1840238d0451576f7a4c56siHssPxZJRvP5MpPtAVXxjyJcvyuhicuES_NHhvk2J-TRG_COpGkw91f17oH7vQY'
@@ -196,34 +207,59 @@ export class MapComponent implements OnInit {
     // Adjust the position of the zoom controls
     this.map.zoomControl.setPosition('topright');
 
-    // this.map.pm.addControls({
-    //   position:'topright',
-    //   // Customize the visible tools
-    //   editControls:false,
-    //   drawRectangle:false,
-    //   drawCircle:false,
-    //   drawCircleMarker:false,
-    //   drawText:false
-    // });
+    this.map.pm.addControls({
+      position:'topright',
+      // Customize the visible tools
+      editControls: false,
+      drawRectangle: false,
+      drawCircle: false,
+      drawCircleMarker: false,
+      drawText: false,
+      drawPolyline: false
+    });
 
-    // this.map.pm.setGlobalOptions({
-    //   pathOptions: {
-    //     weight: 2,
-    //     color: "#4d4d4d",
-    //     fillColor: "#808080",
-    //     fillOpacity: 0.2,
-    //     dashArray:[4, 4]}
-    // });
+    this.map.pm.setGlobalOptions({
+      pathOptions: {
+        weight: 2,
+        color: "#4d4d4d",
+        fillColor: "#808080",
+        fillOpacity: 0.2,
+        dashArray:[4, 4]}
+    });
 
-    // var previousLayer;
+    var previousLayer;
 
-    // this.map.on("pm:create", ({shape,layer}) => {
+    this.map.on("pm:create", ({shape,layer}) => {
 
-    //   if (previousLayer) {
-    //     previousLayer.remove();
-    //   }
-    //   previousLayer = layer;
-    // });
+      if (previousLayer) {
+        previousLayer.remove();
+      }
+      previousLayer = layer;
+
+      var feature = layer.toGeoJSON();
+
+      console.log(feature);
+      // console.log(feature.geometry.coordinates[0]);
+
+      this.visibleMessage = false;
+
+
+      if (shape == "Marker") {
+        this.coordinatesServices.setCoordinates({"lat" : feature.geometry.coordinates[1], "lng" : feature.geometry.coordinates[0]});
+        this.showTables.viewContainerRef.clear();
+        this.showTables.viewContainerRef.createComponent(TablesComponent);
+        this.visibleLink = true;
+      } else if (shape == "Polygon") {
+        this.polygonService.setPolygon(feature.geometry.coordinates[0]);
+        this.showTables.viewContainerRef.clear();
+        this.showTables.viewContainerRef.createComponent(TableSumComponent);
+        this.visibleLink = false;
+
+      }
+
+
+
+    });
   }
 
 }

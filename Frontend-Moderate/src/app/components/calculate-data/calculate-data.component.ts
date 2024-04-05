@@ -1,5 +1,8 @@
 import { Component, Renderer2 } from '@angular/core';
 import { CoordinatesService } from 'src/app/services/coordinates.service';
+import { NgSelectModule, NgOption } from '@ng-select/ng-select';
+import { FormControl } from '@angular/forms';
+
 
 @Component({
   selector: 'app-calculate-data',
@@ -13,7 +16,7 @@ export class CalculateDataComponent {
 
   // Chart options for all charts
   view: [number, number] = [350, 300];
-  legend: boolean = false;
+  legend: boolean = true;
   showLabels: boolean = true;
   animations: boolean = true;
   xAxis: boolean = true;
@@ -49,9 +52,16 @@ export class CalculateDataComponent {
   xAxisLabelBarMonth: string = 'Month';
   yAxisLabelBarMonth: string = 'Energy Production [kWh]';
   chartDataBarMonth: any[];
+
+  // Bar chart about potential
+  xAxisPotential: string = "Month";
+  yAxisPotential: string = "Energy [kWh]";
+  chartDataPotential: any[];
+
+
  
-  url_server = "80.211.131.194";
-  // url_server = "localhost";
+  // url_server = "80.211.131.194";
+  url_server = "localhost";
 
   constructor (private coordinatesService: CoordinatesService, private renderer: Renderer2) {
     
@@ -92,6 +102,7 @@ export class CalculateDataComponent {
     
     // Solar potential
     btnPotential.addEventListener("click", async() => {
+      document.getElementById("potential_chart").style.display = "none";
       document.getElementById("chart").style.display = "none";
       // Show potential form
       calcDiv.innerHTML = `
@@ -124,8 +135,8 @@ export class CalculateDataComponent {
           <input style="margin: 5px 0; width: 120px" type="number" step="0.01" min="0" name="pv_cost" value="2000" required><br/>
 
           <label for="profile">Profile: </label>
-          <select name="profile" style="margin: 5px 10px" required>
-          </select><br/>
+          <select name="profile" style="margin: 5px 0; width: 120px">
+          <select><br/>
 
           <input style="margin: 5px 0" type="submit" value="Calculate">
           <input style="margin: 5px 0" type="reset" value="Reset">
@@ -143,6 +154,7 @@ export class CalculateDataComponent {
 
       // Add profiles to dropdown (select element)
       for (let profile of profiles) {
+        // this.profiles.push({"id" : profile, "name" : profile});
         let optionNode = document.createElement("option");
         optionNode.setAttribute("value", profile);
         optionNode.textContent = profile;
@@ -164,16 +176,18 @@ export class CalculateDataComponent {
         fetch(url, { method: "POST", headers: headers, body: formData, credentials: "include" }) // Obtain the KPIs from server with data inserted in the form
           .then(async(response) => {
             const data = await response.json();
+            const analysis_result = data.results;
             const table = document.createElement("table");
             table.setAttribute("style", "border: 1px solid; width: 100%");
+            console.log(data.month_data);
 
             // Create table with results
-            for (const key in data) { 
+            for (const key in analysis_result) { 
               const tr = document.createElement("tr");
               const tdKey = document.createElement("td");
               const tdValue = document.createElement("td");
               tdKey.textContent = key;
-              tdValue.textContent = data[key].toFixed(2);
+              tdValue.textContent = analysis_result[key].toFixed(2);
               tdKey.setAttribute("style", "background-color: #8B0000; color: white");
               tdValue.setAttribute("style", "background-color: #DC143C; color: white");
               tr.appendChild(tdKey);
@@ -182,6 +196,8 @@ export class CalculateDataComponent {
             }
             message.textContent = "Solar potential";
             calcDiv.appendChild(table);
+            this.chartDataPotential = data.month_data;
+            document.getElementById("potential_chart").style.display = "block";
           })
           .catch(() => {
             message.textContent = "Server error";
@@ -189,6 +205,7 @@ export class CalculateDataComponent {
           .finally(() => { // Always, on success and on error, add a button to return to form
             const button = document.createElement("button");
             button.addEventListener("click", () => { // Button behavior
+              document.getElementById("potential_chart").style.display = "none";
               form.style.display = "block"; // Show form again
               const tableDelete = document.querySelector("#calculation table");
               if (tableDelete) {
@@ -206,6 +223,7 @@ export class CalculateDataComponent {
 
     // Existing system evaluation
     btnEvaluation.addEventListener("click", () => {
+      document.getElementById("potential_chart").style.display = "none";
       document.getElementById("chart").style.display = "none"; // Hide charts
       // Show evaluation form
       calcDiv.innerHTML = `

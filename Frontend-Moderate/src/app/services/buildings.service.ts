@@ -30,4 +30,29 @@ export class BuildingsService {
 
     return this.http.request('GET', this.urlCadastralBuildings, options).toPromise();
   }
+
+  getBuildingsFeaturePolygon(geometry: number[][]): Promise<any>{
+    let polygon = "";
+    for (let point of geometry) {
+      polygon += `${point[0]} ${point[1]}, `
+    }
+    polygon = polygon.slice(0, -1);
+    polygon = polygon.slice(0, -1);
+    const header = new HttpHeaders({ Accept: 'application/xml'});
+    const params = new HttpParams()
+      .set('service', 'wfs')
+      .set('version', '1.0.0')
+      .set('request', 'getFeature')
+      .set('typeName', 'GeoModerate:cadastral_buildings')
+      .set('cql_filter', `INTERSECTS(geom, POLYGON((${polygon})))`)
+      .set('outputFormat', 'application/json');
+    
+    const options = {
+      header,
+      params,
+      responseType: 'text' as 'text'
+    };
+
+    return this.http.request('GET', this.urlCadastralBuildings, options).toPromise();
+  }
 }

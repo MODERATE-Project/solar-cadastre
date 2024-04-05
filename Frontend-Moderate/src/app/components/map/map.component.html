@@ -7,16 +7,22 @@
     <h3 *ngIf="visibleMessage">Click on a building on the map to show the data.</h3>
     <ng-template appShowTables=""></ng-template>
     <nav *ngIf="visibleLink">
-      <button (click)="activateCalculations()">Calculate</button>
+      <!-- <button (click)="activateCalculations()">Calculate</button> -->
+      <div class="card" style="background-color: #CAD1DB; border: 0; width: 45%;">
+        <div class="card-body">
+          <h5>Calculate energy potential</h5>
+          <button (click)="activatePotential()">Calculate</button>
+        </div>
+      </div>
+      <div class="card" style="background-color: #CAD1DB; border: 0; width: 45%;">
+        <div class="card-body">
+          <h5>Solar panel performance check</h5>
+          <button (click)="activateExisting()">Evaluate</button>
+        </div>
+      </div>
     </nav>
-    <nav *ngIf="visibleBack">
-      <button (click)="disableCalculations()">Back to map</button>
-    </nav>    
   </div>
-  <div id="izq">
-    <div id="calculations" style="display: none">
-      <ng-template appShowCalculations=""></ng-template>
-    </div>
+  <div id="right">
     <div id="map"></div>
   </div>
 </div>

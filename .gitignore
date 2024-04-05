@@ -338,9 +338,6 @@ testem.log
 .DS_Store
 Thumbs.db
 
-package-lock.json
-package.json
-
 Backend-Moderate/.gitignore
 Frontend-Moderate/.gitignore
 

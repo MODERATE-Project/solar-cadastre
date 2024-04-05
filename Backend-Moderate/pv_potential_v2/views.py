@@ -201,12 +201,12 @@ def result(request):
 
         # KPI calculation 
         print('Techno-economic calculation...\n')
-        analysis_results = calcs.techno_economic_analysis(
+        analysis_results, month_data = calcs.techno_economic_analysis(
             building_coordinates, pv_nominal_power, roof_tilt, roof_orientation, consumption_type, yearly_consumption, yearly_pv_generation, cost_of_electricity, value_of_sold_electricity, cost_of_PV
         )
 
         if analysis_results is not None:
-            return JsonResponse(analysis_results)
+            return JsonResponse({"results": analysis_results, "month_data": month_data})
             # return render(request, "calc_result.html", {"results" : analysis_results})
         else:
             raise Exception("Error. Not valid result")
