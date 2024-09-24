@@ -1,0 +1,100 @@
+<div id="datos-container">
+
+    <div id="tablas">
+      <div class="container">
+        <h2 style="font-weight: 700; color: #051B39">{{this.streetName}}</h2>
+      </div>
+      <br>
+      <div class="container">
+        <h5 style="font-weight: 700; color: #0D5D93">Building information</h5>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-sm">
+            <p style="font-weight: 400; color: #052D65">Area</p>
+            <h5 style="font-weight: 700; color: #051B39">{{buildingInfo.area.toFixed(2)}} m<sup>2</sup></h5>
+          </div>
+          <div class="col-sm">
+            <p style="font-weight: 400; color: #052D65">Floors</p>
+            <h5 style="font-weight: 700; color: #051B39">{{buildingInfo.floors}}</h5>
+          </div>
+          <div class="col-sm">
+            <p style="font-weight: 400; color: #052D65">PV nominal power convinient surface</p>
+            <h5 style="font-weight: 700; color: #051B39">{{buildingInfo.pv_nominal.toFixed(2)}} kWp</h5>
+          </div>
+          <div class="col-sm">
+            <p style="font-weight: 400; color: #052D65">Average yield</p>
+            <h5 style="font-weight: 700; color: #051B39">{{buildingInfo.average_yi.toFixed(2)}} kWh/kWp</h5>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm">
+            <p style="font-weight: 400; color: #052D65">Building use</p>
+            <h5 style="font-weight: 700; color: #051B39">{{useBuilding}}</h5>
+          </div>
+          <div class="col-sm">
+            <p style="font-weight: 400; color: #052D65">Thermal needs</p>
+            <h5 style="font-weight: 700; color: #051B39">{{buildingInfo.thermal_ne.toFixed(2)}}</h5>
+          </div>
+          <div class="col-sm">
+            <p style="font-weight: 400; color: #052D65">Potential PV energy</p>
+            <h5 style="font-weight: 700; color: #051B39">{{buildingInfo.potential_.toFixed(2)}} kWp</h5>
+          </div>
+          <div class="col-sm">
+            <p style="font-weight: 400; color: #052D65">Potential CO<sub>2</sub> emission reduction</p>
+            <h5 style="font-weight: 700; color: #051B39">{{buildingInfo.potentialc.toFixed(2)}} kgCO<sub>2</sub></h5>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm">
+            <p style="font-weight: 400; color: #052D65">Year of construction</p>
+            <h5 style="font-weight: 700; color: #051B39">{{buildingInfo.year_const}}</h5>
+          </div>
+          <div class="col-sm">
+            <p style="font-weight: 400; color: #052D65">Area convinient for PV</p>
+            <h5 style="font-weight: 700; color: #051B39">{{buildingInfo.area_convi.toFixed(2)}} m<sup>2</sup></h5>
+          </div>
+          <div class="col-sm">
+          </div>
+          <div class="col-sm">
+          </div>
+        </div>
+      </div>
+
+      <br>
+
+      <div class="container">
+        <h5 style="font-weight: 700; color: #134EA1">Raster information</h5>
+      </div>
+      <div class="container">
+        <table style="width: 100%; margin-left: 15px">
+          <tr>
+            <td>
+              <div class="row" style="background-color: #F8F7F7; border-radius: 10px; width: 99%;">
+                <div class="col-sm">
+                  <p style="font-weight: 400; color: #051B39"><img src="../../../assets/img/icons/solar-panel.png"> Solar irradiance</p>
+                </div>
+                <div class="col-sm">
+                  <p style="font-weight: 700; color: #051B39">{{buildingInfo.solar_irra.toFixed(2)}} kWh/m<sup>2</sup></p>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="row" style="background-color: #F8F7F7; border-radius: 10px; width: 99%">
+                <div class="col-sm">
+                  <p style="font-weight: 400; color: #052D65"><img src="../../../assets/img/icons/solar-panel.png"> PV generation</p>
+                </div>
+                <div class="col-sm">
+                  <p style="font-weight: 700; color: #051B39">{{buildingInfo.pv_generat.toFixed(2)}} kWh/m<sup>2</sup></p>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </table>
+      <div>
+      <br/>
+    </div>
+    
+</div>

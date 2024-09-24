@@ -1,0 +1,14 @@
+#chart {
+    display: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+#line_chart > div p {
+    max-width: 500px;
+}
+
+#potential_chart {
+    display: none;
+}

@@ -1,0 +1,43 @@
+#chart {
+    display: none;
+}
+
+label {
+    color: #052D65;
+}
+
+input, select {
+    background-color: #052D651A;
+    color: #052D65;
+    font-weight: 700;
+}
+
+button {
+    background-color: #052D65;
+    color: white;
+    float: right;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.button-back {
+    background-color: #7fb7f0;
+    color: #00b5dd;
+}
+
+.processing {
+    text-align: center;
+    font-weight: bold;
+}
+
+.buttonBack {
+    background-color: #052D65;
+    color: white;
+    float: left !important;
+}
