@@ -1,0 +1,50 @@
+<div id="tabla">
+    <h5 style="font-weight: 700; color: #0D5D93">Selected area information</h5>
+    <div class="container">
+        <div class="row">
+        <div class="col-sm">
+            <div class="card" style="background-color: #CAD1DB; border: 0;">
+            <div class="card-body">
+                <p style="font-weight: bold; color: black;">Sum of area convinient for PV</p>
+                <h5 style="font-weight: bold; color: #134EA1; text-align: center;">{{totalData.area_conv.toFixed(2)}} m<sup>2</sup></h5>
+            </div>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="card" style="background-color: #CAD1DB; border: 0;">
+            <div class="card-body">
+                <p style="font-weight: bold; color: black;">Sum of PV nominal power convinient for PV</p>
+                <h5 style="font-weight: bold; color: #134EA1; text-align: center;">{{totalData.nom_power.toFixed(2)}} kWp</h5>
+            </div>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="card" style="background-color: #CAD1DB; border: 0;">
+            <div class="card-body">
+                <p style="font-weight: bold; color: black;">Sum of potential PV energy</p>
+                <h5 style="font-weight: bold; color: #134EA1; text-align: center;">{{totalData.potential.toFixed(2)}} kWh/year</h5>
+            </div>
+            </div>
+        </div>
+        </div>
+        <br>
+        <div class="row">
+        <div class="col-sm">
+            <div class="card" style="background-color: #CAD1DB; border: 0;">
+            <div class="card-body">
+                <p style="font-weight: bold; color: black;">Average yield</p>
+                <h5 style="font-weight: bold; color: #134EA1; text-align: center;">{{totalData.av_yield.toFixed(2)}} kWh/kWp</h5>
+            </div>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="card" style="background-color: #CAD1DB; border: 0;">
+            <div class="card-body">
+                <p style="font-weight: bold; color: black;">Sum of potential CO<sub>2</sub> emission reduction</p>
+                <h5 style="font-weight: bold; color: #134EA1; text-align: center">{{totalData.co2.toFixed(2)}} kgCO<sub>2</sub></h5>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>

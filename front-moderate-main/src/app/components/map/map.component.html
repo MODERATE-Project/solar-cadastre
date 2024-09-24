@@ -1,0 +1,44 @@
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css"
+/>
+<app-header></app-header>
+<div class="mapa-container">
+  <div id="datos-container">
+    <h3 style="text-align: center;" *ngIf="visibleMessage">Click on a building on the map to show the data.</h3>
+    
+    <ng-template appShowTables=""></ng-template>
+    <div class="container" *ngIf="visibleLink">
+      <h5 style="font-weight: 700; color: #134EA1">Types of calculations</h5>
+    </div>
+    <br>
+    <nav *ngIf="visibleLink">
+      <!-- <button (click)="activateCalculations()">Calculate</button> -->
+      <div class="card" style="background-color: #CAD1DB; border: 0; width: 45%;">
+        <div class="card-body">
+          <h5>Calculate energy potential</h5>
+          <br>
+          <div class="text-description-process">
+            In this process you can calculate the energy potential of your building.
+          </div>
+          <br>
+          <button (click)="activatePotential()">Calculate</button>
+        </div>
+      </div>
+      <div class="card" style="background-color: #CAD1DB; border: 0; width: 45%;">
+        <div class="card-body">
+          <h5>Solar panel performance check</h5>
+          <br>
+          <div class="text-description-process">
+            In this process you can check the performance of your solar panels of your building.
+          </div>
+          <br>
+          <button (click)="activateExisting()">Evaluate</button>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <div id="right">
+    <div id="map"></div>
+  </div>
+</div>
