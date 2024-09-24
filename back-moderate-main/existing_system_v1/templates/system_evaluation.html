@@ -1,0 +1,46 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Existing system</title>
+    <link rel="stylesheet" href="{% static 'existing_system_v1/styles.css' %}">
+    <script src="{% static 'existing_system_v1/show_evaluation.js' %}" defer></script> 
+</head>
+
+<body>
+
+    <h1>Form for evaluation of existing PV systems</h1>
+
+    <form method="POST" action="{% url 'exist_v1:evaluation' %}">
+        {% csrf_token %}
+        <label for="lat">Latitude</label>
+        <input type="number" step="any" name="lat" value="38.24569231574074" required>
+
+        <label for="lon">Longitude</label>
+        <input type="number" step="any" name="lon" value="-0.8062306401633923" required><br/>
+
+        <label for="roof_tilt">Roof tilt</label>
+        <input type="number" step="any" min="0" name="roof_tilt" required>
+
+        <label for="roof_orientation">Roof orientation</label>
+        <input type="number" step="any" name="roof_orientation" required><br/>
+
+        <label for="nom_power">Nominal power</label>
+        <input type="number" step="any" min="0" name="nom_power" required>
+
+        <label for="real_last_year">Real energy generated last year</label>
+        <input type="number" step="any" min="0" name="real_last_year" required><br/>
+
+        <input type="submit" value="Evaluate">
+        <input type="reset" value="Reset">
+    </form>
+
+    <h3 id="result"></h3>
+
+</body>
+
+</html>

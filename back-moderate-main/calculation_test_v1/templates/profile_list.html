@@ -1,0 +1,9 @@
+{% if profiles %}
+    <ul>
+        {% for profile in profiles %}
+            <li>{{ profile.profile }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No profiles available</p>
+{% endif %}

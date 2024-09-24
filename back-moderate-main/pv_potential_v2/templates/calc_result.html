@@ -1,0 +1,44 @@
+{% load template_funcs %}
+{% load static %}
+
+<!--Template to show the table with the KPIs calculated for photovoltaic potential-->
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Calculation result</title>
+    <link rel="stylesheet" href="{% static 'pv_potential_v2/styles.css' %}">
+    <!--JQuery-->
+    {% comment %} <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>  {% endcomment %}
+    <!--JavaScript script to show the table with KPIs when got from Ajax request-->
+    {% comment %} <script src="{% static 'pv_potential_v2/show_result.js' %}" defer></script>  {% endcomment %}
+</head>
+
+<body>
+    <h1>Calculation result</h1>
+    {% comment %} <div id="message">
+        Processing, please wait
+    </div> {% endcomment %}
+    
+    <!-- Create table to show results -->
+    <table>
+        <tr>
+            <th>KPI</th>
+            <th>Value</th>
+        </tr>
+        {% for key, value in results.items %}
+        <tr>
+            <td>{{ key }}</td>
+            <td>{{ value|round_num:2 }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <button onclick="location.href='{% url 'test_v2:form' %}'">Back to form</button>
+
+</body>
+
+</html>
