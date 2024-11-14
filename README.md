@@ -78,6 +78,8 @@ Add a user by inserting the following within `<tomcat-users>` tags:
 
 To access Tomcat, navigate to your server's IP address on port 8080. Log in with the created user and navigate to the "Manage App" section to deploy GeoServer.
 
+This is the file that you need to install GeoServer: https://drive.google.com/file/d/1KkJCQ2Zl6m2ACCpUaEz95C1wUzWPziC8/view?usp=sharing
+
 ## Frontend Installation and Deployment (Angular)
 
 ### Required Versions
