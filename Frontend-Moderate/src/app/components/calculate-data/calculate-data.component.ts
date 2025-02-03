@@ -61,7 +61,7 @@ export class CalculateDataComponent {
 
  
   // url_server = "80.211.131.194";
-  url_server = "localhost";
+  url_server = "";
 
   constructor (private coordinatesService: CoordinatesService, private renderer: Renderer2) {
     
@@ -109,7 +109,7 @@ export class CalculateDataComponent {
 
         <h3>Potential calculation</h3>
         
-        <form method="POST" action='http://${this.url_server}:8000/potential/v2/result' id="potentialMainForm">
+        <form method="POST" action='${this.url_server}/potential/v2/result' id="potentialMainForm">
 
           <label for="roof_tilt">Roof tilt: </label>
           <input style="margin: 5px 0; width: 120px" type="number" step="any" min="0"  max="90" name="roof_tilt" value="30" required><br/>
@@ -146,7 +146,7 @@ export class CalculateDataComponent {
       let form = document.querySelector("form#potentialMainForm") as HTMLFormElement;
 
         // Get profile names from database
-      const responseProfiles = await fetch(`http://${this.url_server}:8000/potential/v2/getProfiles`, { method: "GET" });
+      const responseProfiles = await fetch(`${this.url_server}/potential/v2/getProfiles`, { method: "GET" });
       const resultProfiles = await responseProfiles.json();
       const profiles = resultProfiles.profiles;
 
@@ -167,7 +167,7 @@ export class CalculateDataComponent {
         const formData = new FormData(form); // Create an object containing the data inserted in the form
         formData.append("lat", this.coordinates.lat.toString()); // Append to the formData object the latitude of the click
         formData.append("lon", this.coordinates.lng.toString()); // Append to the formData object the longitude of the click
-        await fetch(`http://${this.url_server}:8000/potential/v2/getCookie`, { method: "GET", credentials: "include" }); // Get the CSRF cookie from backend
+        await fetch(`${this.url_server}/potential/v2/getCookie`, { method: "GET", credentials: "include" }); // Get the CSRF cookie from backend
         form.style.display = "none";  // Hide form
         const message = document.querySelector("#calculation h3");
         message.textContent = "Processing..."; // Change text to indicate that the processing of data is being made
@@ -230,7 +230,7 @@ export class CalculateDataComponent {
 
       <h3>SolarCheckup Navigator</h3>
         
-      <form method="POST" action='http://${this.url_server}:8000/existing/v1/result' id="existingMainForm">
+      <form method="POST" action='${this.url_server}/existing/v1/result' id="existingMainForm">
         
         <label for="roof_tilt">Roof tilt: </label>
         <input style="margin: 5px 0; width: 120px" type="number" step="any" min="0" max="90" name="roof_tilt" value="20" required><br/>
@@ -268,7 +268,7 @@ export class CalculateDataComponent {
         const formData = new FormData(form); // Create an object containing the data inserted in the form
         formData.append("lat", this.coordinates.lat.toString()); // Append to the formData object the latitude of the click
         formData.append("lon", this.coordinates.lng.toString()); // Append to the formData object the longitude of the click
-        await fetch(`http://${this.url_server}:8000/existing/v1/getCookie`, { method: "GET", credentials: "include" }); // Get the CSRF cookie from backend
+        await fetch(`${this.url_server}/existing/v1/getCookie`, { method: "GET", credentials: "include" }); // Get the CSRF cookie from backend
         form.style.display = "none";  // Hide form
         const message = document.querySelector("#calculation h3");
         message.textContent = "Processing..."; // Change text to indicate that the processing of data is being made

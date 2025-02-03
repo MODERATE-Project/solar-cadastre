@@ -1,0 +1,8 @@
+Django==5.0.6
+django-cors-headers
+requests
+numpy
+pandas
+pyproj
+gunicorn
+psycopg2

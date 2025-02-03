@@ -75,7 +75,7 @@ def get_potential(request):
 
 #Gets building features from GeoServer using its latitude and longitude
 def getGeoserverFeatures(lat, long):
-    url = "http://80.211.131.194:8080/geoserver/GeoModerate/ows"
+    url = "http://geoserver:8080/geoserver/GeoModerate/ows" #FIXME poner la url correcta
     headers = {
         "Accept": 'application/xml'
     }

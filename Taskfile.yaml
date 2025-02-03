@@ -1,0 +1,27 @@
+version: "3"
+
+# Para cargar variables de entono (env-vars)
+dotenv: [.env]
+
+# Para parametrizar el fichero
+# # Se utiliza con {{.VAR_NAME}}
+# # # NÓTESE EL PUNTO ANTES DEL NOMBRE
+vars: 
+  VAR_NAME: var_value
+
+tasks:
+
+  build:
+    - docker compose -p moderate-solar-cadastre build --no-cache
+
+  start: 
+    - docker compose -p moderate-solar-cadastre up --build -d
+
+  enter:
+    docker exec -it moderate-solar-cadastre-frontend sh
+
+  stop-rm:
+    docker compose -p moderate-solar-cadastre down --rmi all
+
+  logs:
+    docker compose -p moderate-solar-cadastre logs -f

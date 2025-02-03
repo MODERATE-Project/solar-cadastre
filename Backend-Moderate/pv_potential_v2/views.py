@@ -53,7 +53,7 @@ def getGeoserverFeatures(lat, lon):
         requests.exceptions.RequestException: If a general request error occurs.
     '''
 
-    url = "http://80.211.131.194:8080/geoserver/GeoModerate/ows"
+    url = "http://geoserver:8080/geoserver/GeoModerate/ows" #FIXME poner la URL correcta
     headers = {
         "Accept": 'application/xml'
     }

@@ -32,7 +32,7 @@ export class SolarPotentialComponent {
   chartDataPotential: any[];
 
   // url_server = "80.211.131.194";
-  url_server = "localhost";
+  url_server = "";
 
   visible: boolean = true;
 
@@ -62,7 +62,7 @@ export class SolarPotentialComponent {
     let form = document.querySelector("form") as HTMLFormElement;
     let resultsDiv = document.querySelector("div#results");
 
-    const responseProfiles = await fetch(`http://${this.url_server}:8000/potential/v2/getProfiles`, { method: "GET" });
+    const responseProfiles = await fetch(`${this.url_server}/potential/v2/getProfiles`, { method: "GET" });
     const resultProfiles = await responseProfiles.json();
     const profiles = resultProfiles.profiles;
 
@@ -82,7 +82,7 @@ export class SolarPotentialComponent {
       const formData = new FormData(form); // Create an object containing the data inserted in the form
       formData.append("lat", this.coordinates.lat.toString()); // Append to the formData object the latitude of the click
       formData.append("lon", this.coordinates.lng.toString()); // Append to the formData object the longitude of the click
-      await fetch(`http://${this.url_server}:8000/potential/v2/getCookie`, { method: "GET", credentials: "include" }); // Get the CSRF cookie from backend
+      await fetch(`${this.url_server}/potential/v2/getCookie`, { method: "GET", credentials: "include" }); // Get the CSRF cookie from backend
       this.visible = false;
       form.style.display = "none";  // Hide form
       const message = document.querySelector("#form h2");

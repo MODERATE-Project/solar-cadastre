@@ -30,10 +30,10 @@ export class MapComponent implements OnInit {
   private marker: L.Marker | null = null;
   private map;
 
-  private geoserverURL = "http://80.211.131.194:8080/";
-  private pvGenerationCells = "http://80.211.131.194:8080/geoserver/GeoModerate/wms?";
+  private geoserverURL = "/"; // FIXME poner la url adecuada
+  private pvGenerationCells = "/geoserver/GeoModerate/wms?"; // FIXME poner la url adecuada
 
-  private buildingCadastral = "http://80.211.131.194:8080/geoserver/GeoModerate/wms?"
+  private buildingCadastral = "/geoserver/GeoModerate/wms?" // FIXME poner la url adecuada
 
   point: any;
   visibleMessage: boolean = true;
