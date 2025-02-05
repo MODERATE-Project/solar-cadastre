@@ -1,0 +1,41 @@
+services:
+
+  geoserver:
+    image: kartoza/geoserver
+    container_name: moderate-solar-cadastre-geoserver
+    ports:
+      - "23000:8080"
+    environment:
+      - GEOSERVER_ADMIN_USER=admin
+      - GEOSERVER_ADMIN_PASSWORD=Moderate2024* # FIXME mover a un .env
+    volumes:
+      - geoserver_data:/opt/geoserver/data_dir
+
+  backend:
+    build:
+      context: ./Backend-Moderate
+      dockerfile: Dockerfile
+    container_name: moderate-solar-cadastre-backend
+    # command: gunicorn django_backend.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./Backend-Moderate:/app
+    ports:
+      - "23001:8000"
+    environment:
+      - NODE_ENV=development
+
+  frontend:
+    build:
+      context: ./Frontend-Moderate
+      dockerfile: Dockerfile.dev
+    container_name: moderate-solar-cadastre-frontend
+    volumes:
+      - ./Frontend-Moderate:/app
+      - /app/node_modules
+    ports:
+      - "23002:4200"
+
+volumes:
+  geoserver_data:
+
+

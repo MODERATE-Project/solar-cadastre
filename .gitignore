@@ -343,3 +343,5 @@ Frontend-Moderate/.gitignore
 
 venv
 on-the-fly_calculations/~$teraction.docx
+geoserver_data/
+Frontend-Moderate/.angular/cache/

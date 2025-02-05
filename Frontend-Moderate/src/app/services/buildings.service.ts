@@ -7,7 +7,7 @@ import {Observable} from 'rxjs';
 })
 export class BuildingsService {
 
-  private urlCadastralBuildings = '/geoserver/GeoModerate/ows'; // FIXME poner la url adecuada
+  private urlCadastralBuildings = '/geoserver/GeoModerate/ows'; 
 
   constructor(private http: HttpClient) { }
 

@@ -1,27 +1,64 @@
 version: "3"
 
-# Para cargar variables de entono (env-vars)
+# Load environment variables (env-vars)
 dotenv: [.env]
 
-# Para parametrizar el fichero
-# # Se utiliza con {{.VAR_NAME}}
-# # # NÓTESE EL PUNTO ANTES DEL NOMBRE
+# Parameterize the file
+# # Used with {{.VAR_NAME}}
+# # # NOTE THE DOT BEFORE THE NAME
 vars: 
-  VAR_NAME: var_value
+  compose_file:
+    sh: |
+      if [ "{{.ENV}}" = "prod" ]; then
+        echo "docker-compose.prod.yaml"
+      else
+        echo "docker-compose.dev.yaml"
+      fi
+    enum: [dev, prod]
 
 tasks:
 
   build:
-    - docker compose -p moderate-solar-cadastre build --no-cache
+    desc: Builds service images without using cache
+    cmds:
+      - docker compose -p moderate-solar-cadastre -f {{.compose_file}} build --no-cache
 
   start: 
-    - docker compose -p moderate-solar-cadastre up --build -d
+    desc: Starts services in detached mode and rebuilds if necessary
+    cmds:
+      - docker compose -p moderate-solar-cadastre -f {{.compose_file}} up --build -d
 
   enter:
-    docker exec -it moderate-solar-cadastre-frontend sh
+    desc: Opens a shell inside the frontend container
+    cmds:
+      - docker exec -it moderate-solar-cadastre-frontend sh
+
+  stop:
+    desc: Stops and removes containers without deleting images
+    cmds:
+      - docker compose -p moderate-solar-cadastre -f {{.compose_file}} down
 
   stop-rm:
-    docker compose -p moderate-solar-cadastre down --rmi all
+    desc: Stops and removes containers, also deleting all associated images
+    cmds:
+      - docker compose -p moderate-solar-cadastre -f {{.compose_file}} down --rmi all
 
   logs:
-    docker compose -p moderate-solar-cadastre logs -f
+    desc: Displays logs for backend and frontend by default; can be filtered with CLI_ARGS (task logs -- <services list>)
+    cmds:
+      - docker compose -p moderate-solar-cadastre -f {{.compose_file}} logs -f {{or .CLI_ARGS "backend frontend"}}
+
+  status: 
+    desc: Shows the status of running containers and the current environment
+    cmds:
+      - docker compose -p moderate-solar-cadastre -f {{.compose_file}} ps
+      - cmd: echo --- && echo "ENVIRONMENT:" {{.ENV}}
+        silent: true
+
+  clean-restart:
+    desc: Fully restarts the environment by removing, building, and starting services
+    cmds:
+      - task: stop-rm 
+      - task: build 
+      - task: start 
+      - task: logs
