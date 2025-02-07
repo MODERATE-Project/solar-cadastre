@@ -250,5 +250,5 @@ The application can also be deployed using Docker. Below are the steps to deploy
     docker compose -p moderate-solar-cadastre -f docker-compose.prod.yaml up --build -d
     ```
 
-This will start the PostgreSQL, Django backend, Angular frontend and any other services defined in the `docker-compose.yml` file.
+    This will start the PostgreSQL, Django backend, Angular frontend and any other services defined in the `docker-compose.yml` file.
 
