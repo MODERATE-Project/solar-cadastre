@@ -246,9 +246,9 @@ The application can also be deployed using Docker. Below are the steps to deploy
 
 4. **Docker compose**. Besides the Taskfile, the services can also be started using Docker Compose with the provided `docker-compose.prod.yaml` and `docker-compose.dev.yaml` files for production and development environments, respectively. For example, the command to start the services in the production environment is:
 
-```bash
-docker compose -p moderate-solar-cadastre -f docker-compose.prod.yaml up --build -d
-```
+    ```bash
+    docker compose -p moderate-solar-cadastre -f docker-compose.prod.yaml up --build -d
+    ```
 
 This will start the PostgreSQL, Django backend, Angular frontend and any other services defined in the `docker-compose.yml` file.
 
