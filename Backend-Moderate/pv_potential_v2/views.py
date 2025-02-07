@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from . import calcs_v2 as calcs
 from pyproj import Transformer
 import requests
+from os import getenv
 import pandas as pd
 import json
 
@@ -53,7 +54,7 @@ def getGeoserverFeatures(lat, lon):
         requests.exceptions.RequestException: If a general request error occurs.
     '''
 
-    url = "http://geoserver:8080/geoserver/GeoModerate/ows" #FIXME poner la URL correcta
+    url = getenv("GEOSERVER_URL", "http://geoserver:8080/geoserver/GeoModerate/ows")
     headers = {
         "Accept": 'application/xml'
     }

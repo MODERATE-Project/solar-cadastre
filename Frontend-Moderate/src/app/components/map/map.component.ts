@@ -219,6 +219,9 @@ export class MapComponent implements OnInit {
     });
 
     this.map.pm.setGlobalOptions({
+      markerStyle: {
+        icon: customIcon
+      },    
       pathOptions: {
         weight: 2,
         color: "#4d4d4d",

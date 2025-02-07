@@ -2,6 +2,7 @@ import { Component, Renderer2 } from '@angular/core';
 import { CoordinatesService } from 'src/app/services/coordinates.service';
 import { NgSelectModule, NgOption } from '@ng-select/ng-select';
 import { FormControl } from '@angular/forms';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -59,9 +60,8 @@ export class CalculateDataComponent {
   chartDataPotential: any[];
 
 
- 
   // url_server = "80.211.131.194";
-  url_server = "";
+  url_server = environment.apiUrl;
 
   constructor (private coordinatesService: CoordinatesService, private renderer: Renderer2) {
     

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CoordinatesService } from 'src/app/services/coordinates.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-solar-potential',
@@ -32,7 +33,7 @@ export class SolarPotentialComponent {
   chartDataPotential: any[];
 
   // url_server = "80.211.131.194";
-  url_server = "";
+  url_server = environment.apiUrl;
 
   visible: boolean = true;
 

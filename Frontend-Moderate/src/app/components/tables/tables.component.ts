@@ -4,6 +4,7 @@ import { CoordinatesService } from 'src/app/services/coordinates.service';
 import axios from 'axios';
 import * as esri_geo from 'esri-leaflet-geocoder';
 import * as L from 'leaflet';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -66,7 +67,7 @@ export class TablesComponent implements OnInit {
       params: {
         location: `${this.coordinates.lng},${this.coordinates.lat}`,
         f: 'json',
-        token: 'AAPK5405a7c87b1840238d0451576f7a4c56siHssPxZJRvP5MpPtAVXxjyJcvyuhicuES_NHhvk2J-TRG_COpGkw91f17oH7vQY'
+        token: environment.arcgisToken
       }
     })
       .then((response) => {

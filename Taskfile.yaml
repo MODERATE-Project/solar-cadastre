@@ -49,7 +49,7 @@ tasks:
       - docker compose -p moderate-solar-cadastre -f {{.compose_file}} logs -f {{or .CLI_ARGS "backend frontend"}}
 
   status: 
-    desc: Shows the status of running containers and the current environment
+    desc: Shows the status of running containers and the current environment (developer or production)
     cmds:
       - docker compose -p moderate-solar-cadastre -f {{.compose_file}} ps
       - cmd: echo --- && echo "ENVIRONMENT:" {{.ENV}}

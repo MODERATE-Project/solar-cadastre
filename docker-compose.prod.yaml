@@ -24,15 +24,10 @@ services:
       - ./postgres_data:/var/lib/postgresql/data
 
   backend:
-    build:
-      context: ./Backend-Moderate
-      dockerfile: Dockerfile
+    build: ./Backend-Moderate
     container_name: moderate-solar-cadastre-backend
-    volumes:
-      - ./Backend-Moderate:/app
     ports:
       - "${DOCKER_BACKEND_PORT}:8000"
-      # - "23003:5432"
     environment:
       - GEOSERVER_URL=${GEOSERVER_URL}
       - DB_NAME=${DB_NAME}
@@ -42,17 +37,13 @@ services:
       - DB_PORT=${DB_PORT}
 
   frontend:
-    build:
-      context: ./Frontend-Moderate
-      dockerfile: Dockerfile.dev
+    build: ./Frontend-Moderate
     container_name: moderate-solar-cadastre-frontend
-    volumes:
-      - ./Frontend-Moderate:/app
-      - /app/node_modules
+    # volumes:
+    #   - ./frontend:/app
     ports:
-      - "${DOCKER_FRONTEND_PORT}:4200"
-    environment:
-      - NODE_ENV=development
+      - "${DOCKER_FRONTEND_PORT}:80"
+    command: [ nginx-debug, '-g', 'daemon off;' ]
 
 volumes:
   geoserver_data:
