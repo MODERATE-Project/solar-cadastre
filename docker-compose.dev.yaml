@@ -45,6 +45,8 @@ services:
     build:
       context: ./Frontend-Moderate
       dockerfile: Dockerfile.dev
+      args:
+        - ARCGIS_TOKEN=${ARCGIS_TOKEN}
     container_name: moderate-solar-cadastre-frontend
     volumes:
       - ./Frontend-Moderate:/app

@@ -1,11 +1,15 @@
 FROM node:20.13 AS build
 
+ARG ARCGIS_TOKEN
+
 WORKDIR /app
 
 COPY package*.json ./
 RUN npm ci
 
 COPY . .
+
+RUN sed -i "s|__TOKEN__|${ARCGIS_TOKEN}|g" src/environments/environment.prod.ts
 
 RUN npm run build --prod
 

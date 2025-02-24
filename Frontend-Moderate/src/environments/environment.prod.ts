@@ -1,5 +1,6 @@
 export const environment = {
     production: true,
-    apiUrl: ''
+    apiUrl: '',
+    arcgisToken: '__TOKEN__'
   };
   

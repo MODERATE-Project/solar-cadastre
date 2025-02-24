@@ -37,7 +37,10 @@ services:
       - DB_PORT=${DB_PORT}
 
   frontend:
-    build: ./Frontend-Moderate
+    build: 
+      context: ./Frontend-Moderate
+      args:
+        ARCGIS_TOKEN: ${ARCGIS_TOKEN}
     container_name: moderate-solar-cadastre-frontend
     # volumes:
     #   - ./frontend:/app

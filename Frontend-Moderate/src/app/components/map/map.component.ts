@@ -14,6 +14,7 @@ import { TableSumComponent } from '../table-sum/table-sum.component';
 import { PolygonService } from 'src/app/services/polygon.service';
 import { SolarPotentialComponent } from '../solar-potential/solar-potential.component';
 import { ExistingSystemComponent } from '../existing-system/existing-system.component';
+import { environment } from 'src/environments/environment';
 
 
 
@@ -183,7 +184,7 @@ export class MapComponent implements OnInit {
     //   });
 
     // search widget
-    const token = 'AAPK5405a7c87b1840238d0451576f7a4c56siHssPxZJRvP5MpPtAVXxjyJcvyuhicuES_NHhvk2J-TRG_COpGkw91f17oH7vQY'
+    const token = environment.arcgisToken
 
     const searchControl = new esri_geo.Geosearch({ 
       useMapBounds: false, 
