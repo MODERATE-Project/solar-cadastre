@@ -120,7 +120,7 @@ def getProfiles(request):
 
 
 #Calculates the photovoltaic potential with a set of inputs
-# @csrf_exempt //Disable CSRF protection
+@csrf_exempt
 def result(request):
     '''
     Retrieves user input, calls a function to obtain KPIs and sends them to the user as a response
