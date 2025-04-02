@@ -1,5 +1,6 @@
-import { Component, Renderer2 } from '@angular/core';
+import { Component, EventEmitter, Input, Output, Renderer2 } from '@angular/core';
 import { CoordinatesService } from 'src/app/services/coordinates.service';
+import { WindowService } from 'src/app/services/window.service';
 
 @Component({
   selector: 'app-existing-system',
@@ -7,8 +8,13 @@ import { CoordinatesService } from 'src/app/services/coordinates.service';
   styleUrls: ['./existing-system.component.scss']
 })
 export class ExistingSystemComponent {
+  @Output() backToMap: EventEmitter<void> = new EventEmitter<void>();
+  //coordinates: {lat: number, lng: number};
 
-  coordinates: {lat: number, lng: number};
+  @Input() coordinates: any = {
+    lat: null,
+    lng: null
+  };
 
   // Chart options for all charts
   view: [number, number] = [700, 300];
@@ -46,15 +52,16 @@ export class ExistingSystemComponent {
   yAxisLabelBarMonth: string = 'Energy Production [kWh]';
   chartDataBarMonth: any[];
 
-  // url_server = "80.211.131.194";
-  url_server = "localhost";
+  //url_server = "https://desarrollo.ubikgs.com";
+  url_server = "http://localhost";
 
   visible: boolean = true;
 
-  constructor (private coordinatesService: CoordinatesService, private renderer: Renderer2) { }
+  constructor (private coordinatesService: CoordinatesService, private renderer: Renderer2, private windowService: WindowService) { }
 
   async ngOnInit() {
-    this.coordinates = this.coordinatesService.getCoordinates();
+    console.log(this.coordinates)
+    //this.coordinates = this.coordinatesService.getCoordinates();
     await this.performCalculations();
   }
 
@@ -95,10 +102,12 @@ export class ExistingSystemComponent {
       const formData = new FormData(form); // Create an object containing the data inserted in the form
       formData.append("lat", this.coordinates.lat.toString()); // Append to the formData object the latitude of the click
       formData.append("lon", this.coordinates.lng.toString()); // Append to the formData object the longitude of the click
-      await fetch(`http://${this.url_server}:8000/existing/v1/getCookie`, { method: "GET", credentials: "include" }); // Get the CSRF cookie from backend
+      await fetch(`${this.url_server}:8000/existing/v1/getCookie`, { method: "GET", credentials: "include" }); // Get the CSRF cookie from backend
       form.style.display = "none";  // Hide form
       const message = document.querySelector("#mainForm h2");
       message.textContent = "Processing..."; // Change text to indicate that the processing of data is being made
+      // Add a class to the text that the processing data
+      message.classList.add("text-center");
       const headers = new Headers(); // Create an object to contain the headers of the request to server
       headers.append('X-CSRFToken', this.getCookie("csrftoken")) // Append the CSRF cookie to the headers object
       fetch(url, { method: "POST", headers: headers, body: formData, credentials: "include" }) // Obtain the KPIs from server with data inserted in the form
@@ -278,6 +287,11 @@ export class ExistingSystemComponent {
         })
     });
 
+  }
+
+  goBack() {
+    this.windowService.changeWindow(1);
+    this.windowService.changeVisibleLink(true);
   }
 
 }

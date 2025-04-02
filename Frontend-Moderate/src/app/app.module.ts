@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -17,7 +18,9 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { CommonModule } from '@angular/common';
 import { SolarPotentialComponent } from './components/solar-potential/solar-potential.component';
 import { ExistingSystemComponent } from './components/existing-system/existing-system.component';
-
+import { HeaderComponent } from './components/header/header.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HomeComponent } from './components/home/home.component'
 
 @NgModule({
   declarations: [
@@ -30,13 +33,17 @@ import { ExistingSystemComponent } from './components/existing-system/existing-s
     TableSumComponent,
     SolarPotentialComponent,
     ExistingSystemComponent,
+    HeaderComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     NgxChartsModule,
-    NgSelectModule
+    NgSelectModule,
+    BrowserAnimationsModule,
+    FormsModule
   ],
   providers: [BuildingsService, CoordinatesService],
   bootstrap: [AppComponent]

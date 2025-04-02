@@ -1,6 +1,7 @@
 .mapa-container {
     display: flex;
     flex-direction: row; /* Para alinear horizontalmente */
+    background-color: #edeeef;
 }
 
 #map {
@@ -34,4 +35,8 @@ nav button {
 
 nav h5 {
     font-weight: bold;
+}
+
+.text-description-process {
+    color: #546f95;
 }
