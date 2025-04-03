@@ -273,10 +273,8 @@ export class MapComponent implements OnInit {
         color: "#4d4d4d",
         fillColor: "#808080",
         fillOpacity: 0.2,
-        dashArray:[4, 4]},
-        markerStyle: {
-          icon: customIcon
-        }
+        dashArray:[4, 4]
+      }
     });
 
     this.map.on("pm:create", ({shape,layer}) => {

@@ -19,6 +19,7 @@ export class SolarPotentialComponent {
   };
 
   profiles: any[] = [];
+  visible: boolean = true;
 
   //form values
   roof_tilt: number = 30;
