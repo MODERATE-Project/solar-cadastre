@@ -2,21 +2,41 @@
   rel="stylesheet"
   href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css"
 />
+<app-header></app-header>
 <div class="mapa-container">
   <div id="datos-container">
-    <h3 *ngIf="visibleMessage">Click on a building on the map to show the data.</h3>
-    <ng-template appShowTables=""></ng-template>
+    <!--<h3 style="text-align: center;" *ngIf="visibleMessage">Click on a building on the map to show the data.</h3>-->
+    <h3 style="text-align: center;" *ngIf="visibleMessage">Select the marker option to get the information of a building or the polygon option to select an area of interest.</h3>
+    <!--<ng-template appShowTables=""></ng-template>-->
+    <app-tables *ngIf="window == 1" [buildingInfo]="buildingInfo" [coordinates]="coordinates"></app-tables>
+    <app-table-sum *ngIf="window == 2" [totalData]="totalData"></app-table-sum>
+    <app-solar-potential *ngIf="window == 3" [coordinates]="coordinates"></app-solar-potential>
+    <app-existing-system *ngIf="window == 4" [coordinates]="coordinates"></app-existing-system>
+    <div class="container" *ngIf="visibleLink">
+      <h5 style="font-weight: 700; color: #134EA1">Types of calculations</h5>
+    </div>
+    <br>
     <nav *ngIf="visibleLink">
       <!-- <button (click)="activateCalculations()">Calculate</button> -->
       <div class="card" style="background-color: #CAD1DB; border: 0; width: 45%;">
         <div class="card-body">
           <h5>Calculate energy potential</h5>
+          <br>
+          <div class="text-description-process">
+            In this process you can calculate the energy potential of your building.
+          </div>
+          <br>
           <button (click)="activatePotential()">Calculate</button>
         </div>
       </div>
       <div class="card" style="background-color: #CAD1DB; border: 0; width: 45%;">
         <div class="card-body">
           <h5>Solar panel performance check</h5>
+          <br>
+          <div class="text-description-process">
+            In this process you can check the performance of your solar panels of your building.
+          </div>
+          <br>
           <button (click)="activateExisting()">Evaluate</button>
         </div>
       </div>

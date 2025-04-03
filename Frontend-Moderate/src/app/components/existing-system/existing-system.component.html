@@ -1,5 +1,5 @@
-<div id="mainForm">
-    <h2 style="font-weight: 700; color: #051B39">SolarCheckup Navigator</h2>
+<div class="container" id="mainForm">
+    <h2 style="font-weight: 700; color: #051B39; padding-bottom: 2%;">SolarCheckup Navigator</h2>
     <p *ngIf="visible" style="color: #627A9C">Complete the following information</p>  
         
     <form method="POST" action='{{url_server}}/existing/v1/result'>
@@ -28,9 +28,18 @@
         <input class="form-control" type="number" step="any" min="0" name="real_last_year" required>
       </div>
 
-      <button class="btn" type="submit">Evaluate</button>
-      <!-- <input style="margin: 5px 0" type="reset" value="Reset"> -->
+      <div class="row row-cols-3">
+        <div class="col" style="display: flex;">
+          <button class="btn" (click)="goBack()">< Back</button>
+        </div>
+        <div class="col">
 
+        </div>
+        <div class="col">
+          <button class="btn" type="submit">Evaluate</button>
+        </div>
+      </div>
+      <!-- <input style="margin: 5px 0" type="reset" value="Reset"> -->
     </form>
 </div>
 
@@ -38,40 +47,50 @@
 </div>
 
 <div id="charts">
-    <div id="bar_chart_year">
-      <h5 style="font-weight: 700; color: #0D5D93">Yearly cumulatives of a reference system</h5>
-      <ngx-charts-bar-vertical
-        [view]="view"
-        [scheme]="colorScheme"
-        [results]="chartDataBarYear"
-        [xAxis]="xAxis"
-        [yAxis]="yAxis"
-        [legend]="legend"
-        [showXAxisLabel]="showXAxisLabel"
-        [showYAxisLabel]="showYAxisLabel"
-        [xAxisLabel]="xAxisLabelBarYear"
-        [yAxisLabel]="yAxisLabelBarYear"
-        [customColors]="customColors"
-      >
-      </ngx-charts-bar-vertical>
+  <div class="row">
+    <div class="col">
+      <div id="bar_chart_year">
+        <h5 style="font-weight: 700; color: #0D5D93; text-align: center;">Yearly cumulatives of a reference system</h5>
+        <ngx-charts-bar-vertical
+          [view]="view"
+          [scheme]="colorScheme"
+          [results]="chartDataBarYear"
+          [xAxis]="xAxis"
+          [yAxis]="yAxis"
+          [legend]="legend"
+          [showXAxisLabel]="showXAxisLabel"
+          [showYAxisLabel]="showYAxisLabel"
+          [xAxisLabel]="xAxisLabelBarYear"
+          [yAxisLabel]="yAxisLabelBarYear"
+          [customColors]="customColors"
+          style="display: flex; justify-content: center; align-items: center;"
+        >
+        </ngx-charts-bar-vertical>
+      </div>
     </div>
+    <div class="col">
+      <div id="bar_chart_month">
+        <h5 style="font-weight: 700; color: #0D5D93; text-align: center;">Monthly means</h5>
+        <ngx-charts-bar-vertical
+          [view]="view"
+          [scheme]="colorScheme"
+          [results]="chartDataBarMonth"
+          [xAxis]="xAxis"
+          [yAxis]="yAxis"
+          [legend]="legend"
+          [showXAxisLabel]="showXAxisLabel"
+          [showYAxisLabel]="showYAxisLabel"
+          [xAxisLabel]="xAxisLabelBarMonth"
+          [yAxisLabel]="yAxisLabelBarMonth"
+          style="display: flex; justify-content: center; align-items: center;"
+        >
+        </ngx-charts-bar-vertical>
+      </div>
+    </div>
+  </div>
+    
   
-    <div id="bar_chart_month">
-      <h5 style="font-weight: 700; color: #0D5D93">Monthly means</h5>
-      <ngx-charts-bar-vertical
-        [view]="view"
-        [scheme]="colorScheme"
-        [results]="chartDataBarMonth"
-        [xAxis]="xAxis"
-        [yAxis]="yAxis"
-        [legend]="legend"
-        [showXAxisLabel]="showXAxisLabel"
-        [showYAxisLabel]="showYAxisLabel"
-        [xAxisLabel]="xAxisLabelBarMonth"
-        [yAxisLabel]="yAxisLabelBarMonth"
-      >
-      </ngx-charts-bar-vertical>
-    </div>
+    
   
     <div id="line_chart_div">
       <div id="month_selector">
