@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpEvent, HttpHeaders, HttpParams, HttpRequest} from '@angular/common/http';
 import {Observable} from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BuildingsService {
 
-  private urlCadastralBuildings = '/geoserver/GeoModerate/ows'; 
+  private urlCadastralBuildings = `${environment.geoserverUrl}/ows`;
 
   constructor(private http: HttpClient) { }
 

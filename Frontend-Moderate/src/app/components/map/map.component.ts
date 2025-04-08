@@ -50,9 +50,9 @@ export class MapComponent implements OnInit {
 
 
   private map;
-  private pvGenerationCells = "https://re-modulees.five.es:8443/geoserver/Remodulees/wms?";
+  private pvGenerationCells = `${environment.geoserverUrl}/wms?`;
   //private buildingCadastral = "https://re-modulees.five.es:8443/geoserver/Remodulees/wms?"
-  private buildingCadastral = "/geoserver/GeoModerate/wms?"
+  private buildingCadastral = `${environment.geoserverUrl}/wms?`
 
   point: any;
   visibleMessage: boolean = true;

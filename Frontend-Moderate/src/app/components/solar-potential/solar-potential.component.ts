@@ -63,7 +63,7 @@ export class SolarPotentialComponent {
 
   async ngOnInit() {
     //this.coordinates = this.coordinatesService.getCoordinates();
-    this.http.get(this.url_server + ":8000/potential/v2/getProfiles").subscribe({
+    this.http.get(`${this.url_server}/potential/v2/getProfiles`).subscribe({
       next: (value: any) => {
         console.log("suscripcion en value -> ", value);
         this.profiles = value.profiles;
