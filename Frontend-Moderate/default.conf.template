@@ -11,13 +11,16 @@ server {
 
   location /geoserver/ {
     proxy_pass https://geoserver.moderate.cloud/geoserver/GeoModerate/;
+    proxy_set_header Host $proxy_host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_ssl_server_name on;
 }
 
 location /potential {
     proxy_pass http://backend:8000/potential;
-    proxy_set_header Host $host;
+    proxy_set_header Host $proxy_host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
   }
@@ -25,7 +28,7 @@ location /potential {
 
 location /existing {
     proxy_pass http://backend:8000/existing;
-    proxy_set_header Host $host;
+    proxy_set_header Host $proxy_host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
   }

@@ -1,28 +1,5 @@
 services:
 
-  geoserver:
-    image: kartoza/geoserver
-    container_name: moderate-solar-cadastre-geoserver
-    ports:
-      - "23000:8080"
-    environment:
-      - GEOSERVER_ADMIN_USER=${GEOSERVER_ADMIN_USER}
-      - GEOSERVER_ADMIN_PASSWORD=${GEOSERVER_ADMIN_PASSWORD}
-    volumes:
-      - geoserver_data:/opt/geoserver/data_dir
-
-  postgis:
-    image: postgis/postgis:14-3.5-alpine
-    container_name: moderate-solar-cadastre-postgis
-    environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
-      # port:
-      # - "${DB_PORT}:5432"
-    volumes:
-      - ./postgres_data:/var/lib/postgresql/data
-
   backend:
     build: ./Backend-Moderate
     container_name: moderate-solar-cadastre-backend
@@ -30,11 +7,6 @@ services:
       - "${DOCKER_BACKEND_PORT}:8000"
     environment:
       - GEOSERVER_URL=${GEOSERVER_URL}
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
 
   frontend:
     build: 
@@ -47,6 +19,8 @@ services:
     ports:
       - "${DOCKER_FRONTEND_PORT}:80"
     command: [ nginx-debug, '-g', 'daemon off;' ]
+    environment:
+      - GEOSERVER_URL=${GEOSERVER_URL}
 
 volumes:
   geoserver_data:

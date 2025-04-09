@@ -55,6 +55,7 @@ services:
       - "${DOCKER_FRONTEND_PORT}:4200"
     environment:
       - NODE_ENV=development
+      - GEOSERVER_URL=${GEOSERVER_URL}
 
 volumes:
   geoserver_data:

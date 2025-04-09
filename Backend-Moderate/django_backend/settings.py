@@ -31,7 +31,7 @@ DEBUG = True
 CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:4200', 'https://127.0.0.1:4200', 'http://*127.0.0.1:4200', 'https://*127.0.0.1:4200',
                         "http://localhost:4200", "https://localhost:4200", "http://*localhost:4200", "https://*localhost:4200",
                         "http://80.211.131.194", "https://80.211.131.194", "http://*80.211.131.194", "https://*80.211.131.194",
-                        "http://newdevit:*", "https://newdevit:*", "http://newdevit:23002", "https://newdevit:23002"]
+                        "http://newdevit.fundacionctic.org:3551", "https://geoserver.moderate.cloud", "https://solar.staging.moderate.cloud/"]
 
 
 # Application definition
