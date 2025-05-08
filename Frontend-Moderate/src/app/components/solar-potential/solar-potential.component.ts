@@ -173,7 +173,7 @@ export class SolarPotentialComponent {
   }
 
   async calculateData(){
-    await fetch(`${this.url_server}:8000/potential/v2/getCookie`, { method: "GET", credentials: "include" }).then(() => {
+    await fetch(`${this.url_server}/potential/v2/getCookie`, { method: "GET", credentials: "include" }).then(() => {
       console.log("cookies")
     });
 

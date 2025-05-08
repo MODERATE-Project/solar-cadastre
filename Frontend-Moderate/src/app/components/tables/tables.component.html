@@ -1,18 +1,18 @@
 <div id="datos-container">
 
     <div id="tablas">
-      <div class="container">
+      <div class="container" style="margin-left: 2%;">
         <h2 style="font-weight: 700; color: #051B39">{{this.streetName}}</h2>
       </div>
       <br>
-      <div class="container">
+      <div class="container" style="margin-left: 2%;">
         <h5 style="font-weight: 700; color: #0D5D93">Building information</h5>
       </div>
-      <div class="container">
+      <div class="container" style="margin-left: 2%;">
         <div class="row">
           <div class="col-sm">
             <p style="font-weight: 400; color: #052D65">Area</p>
-            <h5 style="font-weight: 700; color: #051B39">{{buildingInfo.area.toFixed(2)}} m<sup>2</sup></h5>
+            <h5 style="font-weight: 700; color: #051B39">{{buildingInfo.b_area.toFixed(2)}} m<sup>2</sup></h5>
           </div>
           <div class="col-sm">
             <p style="font-weight: 400; color: #052D65">Floors</p>
@@ -31,7 +31,7 @@
         <div class="row">
           <div class="col-sm">
             <p style="font-weight: 400; color: #052D65">Building use</p>
-            <h5 style="font-weight: 700; color: #051B39">{{useBuilding}}</h5>
+            <h5 style="font-weight: 700; color: #051B39">{{buildingInfo.building_u}}</h5>
           </div>
           <div class="col-sm">
             <p style="font-weight: 400; color: #052D65">Thermal needs</p>
@@ -57,18 +57,22 @@
             <h5 style="font-weight: 700; color: #051B39">{{buildingInfo.area_convi.toFixed(2)}} m<sup>2</sup></h5>
           </div>
           <div class="col-sm">
+            <p style="font-weight: 400; color: #052D65">Heat</p>
+            <h5 style="font-weight: 700; color: #051B39">{{buildingInfo.heatdmwh_y.toFixed(2)}} dmwh/y</h5>
           </div>
           <div class="col-sm">
+            <p style="font-weight: 400; color: #052D65">Cool</p>
+            <h5 style="font-weight: 700; color: #051B39">{{buildingInfo.cooldmwh_y.toFixed(2)}} dmwh/y</h5>
           </div>
         </div>
       </div>
 
       <br>
 
-      <div class="container">
+      <!--<div class="container">
         <h5 style="font-weight: 700; color: #134EA1">Raster information</h5>
-      </div>
-      <div class="container">
+      </div>-->
+      <!--<div class="container">
         <table style="width: 100%; margin-left: 15px">
           <tr>
             <td>
@@ -93,7 +97,7 @@
             </td>
           </tr>
         </table>
-      <div>
+      <div>-->
       <br/>
     </div>
     

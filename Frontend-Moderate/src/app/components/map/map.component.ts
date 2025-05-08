@@ -165,7 +165,7 @@ export class MapComponent implements OnInit {
     const buildingPVGeneration = L.tileLayer.wms(this.pvGenerationCells, {
       format: 'image/png',
       transparent: true,
-      layers: 'Remodulees:PV generation convinient cells',
+      layers: 'Moderate:PV generation convinient cells',
       tileSize: 2080,
     });
 
