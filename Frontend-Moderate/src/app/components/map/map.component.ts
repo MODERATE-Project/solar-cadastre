@@ -165,14 +165,14 @@ export class MapComponent implements OnInit {
     const buildingPVGeneration = L.tileLayer.wms(this.pvGenerationCells, {
       format: 'image/png',
       transparent: true,
-      layers: 'Moderate:PV generation convinient cells',
+      layers: 'GeoModerate:PV generation convinient cells',
       tileSize: 2080,
     });
 
     const buildingCadastralLayer = L.tileLayer.wms(this.buildingCadastral, {
       format: 'image/png',
       transparent: true,
-      layers: 'Moderate:cadastral_buildings',
+      layers: 'GeoModerate:cadastral_buildings',
       tileSize: 3080,
       crs: crs25830
     });
