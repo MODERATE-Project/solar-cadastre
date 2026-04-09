@@ -1,50 +1,73 @@
-<div id="tabla">
-    <h5 class="title-table-sum">Selected area information</h5>
-    <div class="container">
-        <div class="row">
-        <div class="col-sm">
-            <div class="card" style="background-color: #CAD1DB; border: 0;">
-            <div class="card-body">
-                <p style="font-weight: bold; color: black;">Sum of area convinient for PV</p>
-                <h5 style="font-weight: bold; color: #134EA1; text-align: center;">{{totalData.area_conv.toFixed(2)}} m<sup>2</sup></h5>
-            </div>
-            </div>
+<div id="tabla" class="p-3">
+  <div class="mb-4 d-flex align-items-center">
+    <div style="width: 4px; height: 24px; background-color: #134EA1; margin-right: 12px; border-radius: 2px;"></div>
+    <h5 class="title-table-sum mb-0" style="font-weight: 700; color: #051B39; letter-spacing: -0.5px;">
+      Selected Area Information
+    </h5>
+  </div>
+
+  <div class="container-fluid px-0">
+    <div class="row g-3 mb-3">
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0" style="background-color: #CAD1DB; border-radius: 12px;">
+          <div class="card-body p-3">
+            <small class="text-uppercase fw-bold opacity-75" style="color: black; font-size: 0.7rem;">Convenient PV Area</small>
+            <h4 class="mt-2 mb-0 fw-bold" style="color: #134EA1;">
+              {{totalData.area_conv.toFixed(2)}} <span style="font-size: 0.9rem;">m²</span>
+            </h4>
+          </div>
         </div>
-        <div class="col-sm">
-            <div class="card" style="background-color: #CAD1DB; border: 0;">
-            <div class="card-body">
-                <p style="font-weight: bold; color: black;">Sum of PV nominal power convinient for PV</p>
-                <h5 style="font-weight: bold; color: #134EA1; text-align: center;">{{totalData.nom_power.toFixed(2)}} kWp</h5>
-            </div>
-            </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0" style="background-color: #CAD1DB; border-radius: 12px;">
+          <div class="card-body p-3">
+            <small class="text-uppercase fw-bold opacity-75" style="color: black; font-size: 0.7rem;">Nominal Power</small>
+            <h4 class="mt-2 mb-0 fw-bold" style="color: #134EA1;">
+              {{totalData.nom_power.toFixed(2)}} <span style="font-size: 0.9rem;">kWp</span>
+            </h4>
+          </div>
         </div>
-        <div class="col-sm">
-            <div class="card" style="background-color: #CAD1DB; border: 0;">
-            <div class="card-body">
-                <p style="font-weight: bold; color: black;">Sum of potential PV energy</p>
-                <h5 style="font-weight: bold; color: #134EA1; text-align: center;">{{totalData.potential.toFixed(2)}} kWh/year</h5>
-            </div>
-            </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0" style="background-color: #CAD1DB; border-radius: 12px;">
+          <div class="card-body p-3">
+            <small class="text-uppercase fw-bold opacity-75" style="color: black; font-size: 0.7rem;">Yearly Production</small>
+            <h4 class="mt-2 mb-0 fw-bold" style="color: #134EA1;">
+              {{totalData.potential.toFixed(2)}} <span style="font-size: 0.8rem;">kWh/y</span>
+            </h4>
+          </div>
         </div>
-        </div>
-        <br>
-        <div class="row">
-        <div class="col-sm">
-            <div class="card" style="background-color: #CAD1DB; border: 0;">
-            <div class="card-body">
-                <p style="font-weight: bold; color: black;">Average yield</p>
-                <h5 style="font-weight: bold; color: #134EA1; text-align: center;">{{totalData.av_yield.toFixed(2)}} kWh/kWp</h5>
-            </div>
-            </div>
-        </div>
-        <div class="col-sm">
-            <div class="card" style="background-color: #CAD1DB; border: 0;">
-            <div class="card-body">
-                <p style="font-weight: bold; color: black;">Sum of potential CO<sub>2</sub> emission reduction</p>
-                <h5 style="font-weight: bold; color: #134EA1; text-align: center">{{totalData.co2.toFixed(2)}} kgCO<sub>2</sub></h5>
-            </div>
-            </div>
-        </div>
-        </div>
+      </div>
     </div>
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="card h-100 shadow-sm border-0" style="background-color: #CAD1DB; border-radius: 12px;">
+          <div class="card-body p-3 d-flex justify-content-between align-items-center">
+            <div>
+              <small class="text-uppercase fw-bold opacity-75" style="color: black; font-size: 0.7rem;">Average Yield</small>
+              <h4 class="mt-1 mb-0 fw-bold" style="color: #134EA1;">{{totalData.av_yield.toFixed(2)}}</h4>
+              <small style="color: #134EA1;">kWh/kWp</small>
+            </div>
+            <i class="bi bi-graph-up-arrow fs-3 opacity-25"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card h-100 shadow-sm border-0" style="background-color: #CAD1DB; border-radius: 12px;">
+          <div class="card-body p-3 d-flex justify-content-between align-items-center">
+            <div>
+              <small class="text-uppercase fw-bold opacity-75" style="color: black; font-size: 0.7rem;">CO₂ Saved</small>
+              <h4 class="mt-1 mb-0 fw-bold" style="color: #134EA1;">{{totalData.co2.toFixed(2)}}</h4>
+              <small style="color: #134EA1;">kgCO₂/year</small>
+            </div>
+            <i class="bi bi-leaf-fill fs-3 opacity-25 text-success"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

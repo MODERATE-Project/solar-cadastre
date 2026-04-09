@@ -7,5 +7,7 @@ export class CityService {
 
   selectedCity: string = '';
 
+  selectedAddress: string = '';
+
   constructor() { }
 }

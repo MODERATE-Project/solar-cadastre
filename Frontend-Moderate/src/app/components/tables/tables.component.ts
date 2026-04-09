@@ -2,9 +2,8 @@ import { Component, Renderer2, OnInit, Input, ChangeDetectorRef } from '@angular
 import axios from 'axios';
 import * as esri_geo from 'esri-leaflet-geocoder';
 import * as L from 'leaflet';
-import { environment } from 'src/environments/environment';
 import { CoordinatesService } from 'src/app/services/coordinates.service';
-
+import { CityService } from 'src/app/services/city.service';
 
 @Component({
   selector: 'app-tables',
@@ -25,12 +24,13 @@ export class TablesComponent implements OnInit {
   useBuilding: any;
   visible: boolean = false;
 
-  constructor (private coordinatesService: CoordinatesService) {
+  constructor (private coordinatesService: CoordinatesService, private cityService: CityService) {
   }
 
   async ngOnInit() {
     //this.coordinates = this.coordinatesService.getCoordinates();
     await this.showTables();
+    console.log("Datos edificio: ", this.buildingInfo)
   }
 
   async showTables() {
@@ -67,7 +67,7 @@ export class TablesComponent implements OnInit {
       params: {
         location: `${this.coordinates.lng},${this.coordinates.lat}`,
         f: 'json',
-        token: environment.arcgisToken
+        token: 'AAPK5405a7c87b1840238d0451576f7a4c56siHssPxZJRvP5MpPtAVXxjyJcvyuhicuES_NHhvk2J-TRG_COpGkw91f17oH7vQY'
       }
     })
       .then((response) => {
@@ -75,7 +75,7 @@ export class TablesComponent implements OnInit {
         this.streetName = response.data.address.Address;
         this.useBuilding = nominatimResponse.data.type;
         // const useBuilding = "residential"
-
+        this.cityService.selectedAddress = this.streetName;
         this.visible = true;
       })
       .catch((error) => {

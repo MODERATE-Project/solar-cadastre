@@ -10,7 +10,6 @@ import "@geoman-io/leaflet-geoman-free";
 import { BuildingsService } from 'src/app/services/buildings.service';
 import { SolarPotentialComponent } from '../solar-potential/solar-potential.component';
 import { ExistingSystemComponent } from '../existing-system/existing-system.component';
-import { environment } from 'src/environments/environment';
 import { TablesComponent } from '../tables/tables.component';
 import { CoordinatesService } from 'src/app/services/coordinates.service';
 import { CityService } from 'src/app/services/city.service';
@@ -50,15 +49,40 @@ export class MapComponent implements OnInit {
 
 
   private map;
-  private pvGenerationCells = `${environment.geoserverUrl}/wms?`;
-  //private buildingCadastral = "https://re-modulees.five.es:8443/geoserver/Remodulees/wms?"
-  private buildingCadastral = `${environment.geoserverUrl}/wms?`
+  // Base layers
+  openStreetMapLayer: L.TileLayer;
+  topographicLayer: L.TileLayer;
+  streetsLayer: any;
+
+  // Overlays
+  cadastreLayer: L.TileLayer;
+  buildingCadastralLayer: L.TileLayer;
+  buildingCadastralLayerTypology: L.TileLayer;
+  buildingCadastralLayerThermalNeeds: L.TileLayer;
+
+  // Stores active basemap
+  currentBaseLayer: L.TileLayer;
+
+  buildingCadastralLegendTypology = "http://localhost:8080/geoserver/Moderate/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=Moderate:cadastral_buildings&STYLE=cadastral_buildings";
+
+  buildingCadastralLegendThermalNeeds = "http://localhost:8080/geoserver/Moderate/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=Moderate:cadastral_buildings&STYLE=thermal_needs";
+
+  groups = {
+    baseMaps: true,
+    cadastre: true,
+    buildings: true
+  };
+
+  private pvGenerationCells = "http://localhost:8080/geoserver/Moderate/wms?";
+  //private buildingCadastral = "https://re-modulees.five.es:8443/geoserver/Moderate/wms?"
+  private buildingCadastral = "http://localhost:8080/geoserver/Moderate/wms?"
 
   point: any;
   visibleMessage: boolean = true;
   visibleLink: boolean = false;
   visibleBack: boolean = false;
 
+  private legendControl: L.Control | null = null;
 
   WMS_CADASTRE = 'https://ovc.catastro.meh.es/Cartografia/WMS/ServidorWMS.aspx?';
   properties: any[];
@@ -112,6 +136,34 @@ export class MapComponent implements OnInit {
     this.visibleBack = false;
   }
 
+  showLegend(legendUrl: string) {
+  // Si ya existe una leyenda, la eliminamos
+  if (this.legendControl) {
+    this.map.removeControl(this.legendControl);
+    this.legendControl = null;
+  }
+
+  this.legendControl = (L.control as any)({ position: 'bottomright' });
+
+  this.legendControl.onAdd = () => {
+    const div = L.DomUtil.create('div', 'info legend');
+    div.style.backgroundColor = 'white';
+    div.style.padding = '5px';
+    div.style.border = '1px solid #ccc';
+    div.innerHTML = `<img src="${legendUrl}" alt="Legend" />`;
+    return div;
+  };
+
+  this.legendControl.addTo(this.map);
+}
+
+hideLegend() {
+  if (this.legendControl) {
+    this.map.removeControl(this.legendControl);
+    this.legendControl = null;
+  }
+}
+
   initMap(){
     //[38.2462, -0.8073], 13 crevillente
     //[51.505, 10], 5 ue
@@ -124,7 +176,16 @@ export class MapComponent implements OnInit {
        origin: [0, 0]
      });
 
-    this.map = L.map('map').setView([38.2462, -0.8073], 16);
+     const crs4326 = L.CRS.EPSG4326;
+
+    if (this.cityService.selectedCity) {
+      switch (this.cityService.selectedCity) {
+        case 'Crevillent':
+          this.map = L.map('map').setView([38.2462, -0.8073], 16);
+          break;
+      }
+    }
+
     console.log(this.map)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
@@ -138,24 +199,20 @@ export class MapComponent implements OnInit {
     });
 
     // Añadir capas de mapas
-    const openStreetMapLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    this.openStreetMapLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
     });
-    const topographicLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenTopoMap contributors'
-    });
-    const streetsLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    });
+    this.topographicLayer = esri.basemapLayer('Topographic');
+    this.streetsLayer = esri.basemapLayer('Streets');
 
     // Definir el control de capas
     const baseMaps = {
-      "OpenStreetMap": openStreetMapLayer,
-      "Topographic": topographicLayer,
+      "OpenStreetMap": this.openStreetMapLayer,
+      "Topographic": this.topographicLayer,
       "Streets": esri.basemapLayer('Streets'),
     };
 
-    const cadastreLayer = L.tileLayer.wms(this.WMS_CADASTRE, {
+    this.cadastreLayer = L.tileLayer.wms(this.WMS_CADASTRE, {
       format: 'image/png',
       transparent: true,
       layers: 'Catastro',
@@ -165,60 +222,59 @@ export class MapComponent implements OnInit {
     const buildingPVGeneration = L.tileLayer.wms(this.pvGenerationCells, {
       format: 'image/png',
       transparent: true,
-      layers: 'GeoModerate:PV generation convinient cells',
+      layers: 'Moderate:PV generation convinient cells',
       tileSize: 2080,
     });
 
-    const buildingCadastralLayer = L.tileLayer.wms(this.buildingCadastral, {
+    this.buildingCadastralLayer = L.tileLayer.wms(this.buildingCadastral, {
       format: 'image/png',
       transparent: true,
-      layers: 'GeoModerate:cadastral_buildings',
+      layers: '	Moderate:cadastral_buildings',
       tileSize: 3080,
-      crs: crs25830
+      crs: crs4326
     });
 
-    const overlayMaps = {
-      "PV generation convinient cells": buildingPVGeneration,
-      "Cadastral buildings": buildingCadastralLayer,
+    this.buildingCadastralLayerTypology = L.tileLayer.wms(this.buildingCadastral, {
+      format: 'image/png',
+      transparent: true,
+      layers: '	Moderate:cadastral_buildings',
+      tileSize: 3080,
+      styles: 'cadastral_buildings',
+      crs: crs4326
+    });
+
+    this.buildingCadastralLayerThermalNeeds = L.tileLayer.wms(this.buildingCadastral, {
+      format: 'image/png',
+      transparent: true,
+      layers: '	Moderate:cadastral_buildings',
+      tileSize: 3080,
+      styles: '	thermal_needs',
+      opacity: 0.7,
+      crs: crs4326
+    });
+
+    /*const groupedOverlays  = {
+      'Cadastral buildings': {
+        'Default': buildingCadastralLayer,
+        'Typology': buildingCadastralLayerTypology,
+      },
+      'Cadastre': {
+        'Cadastre Spain': cadastreLayer,
+      },
+      //"PV generation convinient cells": buildingPVGeneration,
+      /*Cadastral buildings Default": buildingCadastralLayer,
+      "Cadastral buildings Typology": buildingCadastralLayerTypology,
       "Cadastre": cadastreLayer,
-    };
+    };*/
 
 
-    L.control.layers(baseMaps, overlayMaps).addTo(this.map);
+    /*const control = (L.control as any).groupedLayers(baseMaps, groupedOverlays, {
+      collapsed: true,
+    })
 
-    // this.map.on('click', async (event) => {
+    control.addTo(this.map);*/
 
-    //   this.visibleLink = false;
-
-    //   if (this.marker) {
-    //     this.marker.setLatLng(event.latlng);
-    //     console.log(event.latlng);
-    //   } else {
-    //     this.marker = L.marker(event.latlng, { icon: customIcon }).addTo(this.map);
-    //   }
-
-    //   const latLng = event.latlng;
-    //   // this.coordinatesServices.sendCoordinates(latLng)
-    //   this.coordinatesServices.setCoordinates(latLng);
-
-    //   this.visibleMessage = false;
-
-    //   this.showTables.viewContainerRef.clear();
-    //   this.showTables.viewContainerRef.createComponent(TablesComponent);
-
-    //   this.visibleLink = true;
-
-      
-    //   /*const popup = L.popup()
-    //     .setLatLng(latLng)
-    //     .setContent('You click in this position')
-    //     .openOn(this.map)*/
-    //   // Puedes realizar cualquier acción adicional con las coordenadas del clic aquí
-
-    //   });
-
-    // search widget
-    const token = environment.arcgisToken
+    const token = 'AAPK5405a7c87b1840238d0451576f7a4c56siHssPxZJRvP5MpPtAVXxjyJcvyuhicuES_NHhvk2J-TRG_COpGkw91f17oH7vQY'
 
     const searchControl = new esri_geo.Geosearch({
       useMapBounds: false,
@@ -251,30 +307,29 @@ export class MapComponent implements OnInit {
     });
 
     // Adjust the position of the zoom controls
-    this.map.zoomControl.setPosition('topright');
+    this.map.zoomControl.setPosition('topleft');
 
     this.map.pm.addControls({
-      position:'topright',
+      position:'topleft',
       // Customize the visible tools
       editControls: false,
       drawRectangle: false,
       drawCircle: false,
       drawCircleMarker: false,
       drawText: false,
-      drawPolyline: false
+      drawPolyline: false,
     });
 
     this.map.pm.setGlobalOptions({
-      markerStyle: {
-        icon: customIcon
-      },    
       pathOptions: {
         weight: 2,
         color: "#4d4d4d",
         fillColor: "#808080",
         fillOpacity: 0.2,
-        dashArray:[4, 4]
-      }
+        dashArray:[4, 4]},
+        markerStyle: {
+          icon: customIcon
+        }
     });
 
     this.map.on("pm:create", ({shape,layer}) => {
@@ -313,7 +368,7 @@ export class MapComponent implements OnInit {
             this.totalData.area_conv += feature.properties.area_convi;
             this.totalData.nom_power += feature.properties.pv_nominal;
             this.totalData.potential += feature.properties.potential_;
-            this.totalData.av_yield += feature.properties.average_yi;
+            this.totalData.av_yield += feature.properties.average_yi / featureList.length;
             this.totalData.co2 += feature.properties.potentialc;
           }
 
@@ -332,5 +387,34 @@ export class MapComponent implements OnInit {
 
     });
   }
+
+  setBaseLayer(layer: L.TileLayer) {
+  if (this.currentBaseLayer) {
+    this.map.removeLayer(this.currentBaseLayer);
+  }
+  this.currentBaseLayer = layer;
+  this.map.addLayer(layer);
+}
+
+toggleLayer(layer: L.Layer, event: any, type?: string) {
+  if (event.target.checked) {
+    this.map.addLayer(layer);
+    if (type === 'typology') {
+      this.showLegend(this.buildingCadastralLegendTypology);
+    }
+    if (type === 'thermal_needs') {
+      this.showLegend(this.buildingCadastralLegendThermalNeeds);
+    }
+  } else {
+    this.map.removeLayer(layer);
+    if (type === 'typology') {
+      this.hideLegend();
+    }
+  }
+}
+
+toggleGroup(groupName: string) {
+  this.groups[groupName] = !this.groups[groupName];
+}
 
 }

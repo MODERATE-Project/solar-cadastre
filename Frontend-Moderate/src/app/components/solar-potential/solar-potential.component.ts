@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
 import { CoordinatesService } from 'src/app/services/coordinates.service';
-import { environment } from 'src/environments/environment';
 import { WindowService } from 'src/app/services/window.service';
+import { CityService } from 'src/app/services/city.service';
 
 @Component({
   selector: 'app-solar-potential',
@@ -19,7 +19,6 @@ export class SolarPotentialComponent {
   };
 
   profiles: any[] = [];
-  visible: boolean = true;
 
   //form values
   roof_tilt: number = 30;
@@ -53,17 +52,23 @@ export class SolarPotentialComponent {
   chartDataPotential: any[] = [];
 
   //url_server = "https://desarrollo.ubikgs.com";
-  url_server = environment.apiUrl;
+  url_server = "http://localhost:8000";
+  //url_server = "https://re-modulees.five.es/backend";
   peticion: string = this.url_server + "/potential/v2/result";
 
   //visible: boolean = true;
   window: number = 1;
 
-  constructor (private coordinatesService: CoordinatesService, private http: HttpClient, private windowService: WindowService) { }
+  city: string = "";
+  address: string = "";
+
+  activeTab: string = 'table';
+
+  constructor (private coordinatesService: CoordinatesService, private http: HttpClient, private windowService: WindowService, private cityService: CityService) { }
 
   async ngOnInit() {
     //this.coordinates = this.coordinatesService.getCoordinates();
-    this.http.get(`${this.url_server}/potential/v2/getProfiles`).subscribe({
+    this.http.get(this.url_server + "/potential/v2/getProfiles").subscribe({
       next: (value: any) => {
         console.log("suscripcion en value -> ", value);
         this.profiles = value.profiles;
@@ -71,6 +76,9 @@ export class SolarPotentialComponent {
       error: err => console.log("error en la suscripcion -> ", err),
       complete: () => console.log("completado", this.profiles)
     });
+
+    this.city = this.cityService.selectedCity;
+    this.address = this.cityService.selectedAddress;
     //await this.performCalculations();
   }
 
@@ -89,6 +97,10 @@ export class SolarPotentialComponent {
     }
 
     return cookieValue;
+  }
+
+  setTab(tab: string) {
+    this.activeTab = tab;
   }
 
   async performCalculations() {
@@ -116,7 +128,7 @@ export class SolarPotentialComponent {
       formData.append("lat", this.coordinates.lat.toString()); // Append to the formData object the latitude of the click
       formData.append("lon", this.coordinates.lng.toString()); // Append to the formData object the longitude of the click
       await fetch(`${this.url_server}/potential/v2/getCookie`, { method: "GET", credentials: "include" }); // Get the CSRF cookie from backend
-      this.visible = false;
+      //this.visible = false;
       form.style.display = "none";  // Hide form
       const message = document.querySelector("#form h2");
       message.textContent = "Processing..."; // Change text to indicate that the processing of data is being made
@@ -209,7 +221,14 @@ export class SolarPotentialComponent {
         .then(async(response) => {
           const data = await response.json();
           console.log(data)
-          this.resultValue = data.results;
+
+          this.resultValue = Object.fromEntries(
+            Object.entries(data.results).map(([key, val]) => {
+              const num = Number(val);
+              return [key, isNaN(num) ? val : Number(num.toFixed(2))];
+            })
+          );
+          
           this.chartDataPotential = data.month_data;
           this.window = 3;
         })

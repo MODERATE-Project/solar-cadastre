@@ -41,3 +41,274 @@ button {
     color: white;
     float: left !important;
 }
+
+/* Estilos adicionales para Solar Potential */
+.instruction-text {
+  color: #627A9C;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.profile-hint-box {
+  background-color: #f0f4f8;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border-left: 4px solid #0D5D93;
+  color: #4a607d;
+  line-height: 1.4;
+  
+  small {
+    display: block;
+    margin-bottom: 2px;
+  }
+}
+
+/* Botón consistente con el otro formulario */
+.btn-evaluate {
+  background-color: #052D65 !important;
+  color: white !important;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-weight: 700;
+  border: none;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #0D5D93 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(5, 45, 101, 0.2);
+  }
+}
+
+/* Reutilizamos la Glass Card del componente anterior */
+.glass-card {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  border: 1px solid #e1e8f1;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+#results {
+  //margin: 20px auto;
+  max-width: 600px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.table {
+  overflow: hidden;
+  border-radius: 8px;
+  border-collapse: collapse;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.table tr {
+  transition: background-color 0.3s ease;
+}
+
+.table tr:hover {
+  background-color: rgba(15, 72, 129, 0.1);
+}
+
+.table td {
+  padding: 12px 16px;
+  font-size: 15px;
+}
+
+.table th:first-child {
+  background-color: #0f4881;
+  color: #fff;
+  font-weight: 600;
+  width: 45%;
+  text-align: left;
+  padding-left: 2.5%;
+  border-bottom: #fff 1px solid;
+}
+
+.table th:last-child {
+  background-color: #069dc9;
+  color: #fff;
+  text-align: left;
+  padding-left: 3%;
+  border-bottom: #fff 1px solid;
+}
+
+.table td:first-child {
+  background-color: #0f4881;
+  color: #fff;
+  font-weight: 600;
+  width: 45%;
+  text-align: left;
+}
+
+.table td:last-child {
+  background-color: #069dc9;
+  color: #fff;
+  text-align: left;
+}
+
+.direction-process {
+    font-size: 14px;
+    color: #0f4881;
+    margin-bottom: 2%;
+}
+
+.solar-potential-title {
+    cursor: pointer;
+    padding-bottom: 2%;
+    font-weight: 700; 
+    color: #051B39;
+}
+
+.solar-potential-results {
+    cursor: pointer;
+    padding-bottom: 2%;
+    font-weight: 700; 
+    color: #051B39;
+}
+
+/* Contenedor de Gráfico Responsivo */
+.chart-container-potential {
+  width: 100%;
+  height: 450px; /* Ajustamos altura para que cuadre con la tabla larga */
+  display: block;
+}
+
+.results-card, .chart-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e1e8f0;
+}
+
+.results-subtitle {
+  font-weight: 700;
+  color: #0D5D93;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+}
+
+/* Rediseño de la Tabla para que no sea tan oscura */
+.custom-solar-table {
+  width: 100%;
+  margin-bottom: 0;
+  border-collapse: separate;
+  border-spacing: 0 5px; /* Espacio entre filas */
+
+  thead th {
+    background-color: #052D65 !important;
+    color: white;
+    border: none;
+    padding: 12px;
+    &:first-child { border-radius: 8px 0 0 8px; }
+    &:last-child { border-radius: 0 8px 8px 0; }
+  }
+
+  tbody tr {
+    transition: transform 0.2s;
+    td {
+      padding: 10px 15px;
+      border: none;
+      vertical-align: middle;
+    }
+    &:hover {
+      transform: scale(1.01);
+    }
+  }
+
+  .param-name {
+    background-color: #0f4881;
+    color: white;
+    font-weight: 600;
+    width: 60%;
+    border-radius: 6px 0 0 6px;
+    font-size: 0.85rem;
+    text-transform: capitalize;
+  }
+
+  .param-value {
+    background-color: #f8fafd;
+    color: #052D65;
+    font-weight: 700;
+    text-align: right;
+    border-radius: 0 6px 6px 0;
+    border: 1px solid #e1e8f0;
+  }
+}
+
+/* Contenedor de Pestañas */
+.tabs-container {
+  display: flex;
+  justify-content: center;
+}
+
+.tabs-pills {
+  background: #e1e8f0;
+  padding: 6px;
+  border-radius: 50px;
+  display: inline-flex;
+  
+  button {
+    border: none;
+    padding: 10px 30px;
+    border-radius: 40px;
+    font-weight: 700;
+    color: #052D65;
+    background: transparent;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-size: 0.9rem;
+
+    &.active {
+      background: #052D65;
+      color: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+  }
+}
+
+/* El contenido crece al 100% */
+.result-content {
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-full-wrapper {
+  width: 100%;
+  height: 450px;
+  margin-top: 20px;
+}
+
+/* Ajuste de la tabla para que no sea tan ancha en modo pestaña */
+.custom-solar-table {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Forzar que el gráfico ocupe todo el ancho disponible */
+ngx-charts-bar-vertical-2d {
+  width: 100%;
+}
+
+/* Animación de entrada */
+.animate-fade {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 992px) {
+  .chart-container-potential {
+    height: 350px;
+  }
+  .custom-solar-table .param-name {
+    width: 50%;
+  }
+}

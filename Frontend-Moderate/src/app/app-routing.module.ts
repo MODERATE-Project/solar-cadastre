@@ -7,8 +7,8 @@ import { SolarPotentialComponent } from './components/solar-potential/solar-pote
 import { HomeComponent } from './components/home/home.component';
 
 const routes: Routes = [
-  { path: 'map', component: MapComponent },
   { path: '', component: HomeComponent },
+  { path: 'map', component: MapComponent },
   { path: 'solar-potential', component: SolarPotentialComponent },
   {path: "calculate", component: CalculateDataComponent}, 
   {path: "tables", component: TablesComponent}

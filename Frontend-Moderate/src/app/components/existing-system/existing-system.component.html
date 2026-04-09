@@ -1,146 +1,227 @@
-<div class="container" id="mainForm">
-    <h2 style="font-weight: 700; color: #051B39; padding-bottom: 2%;">SolarCheckup Navigator</h2>
-    <p *ngIf="visible" style="color: #627A9C">Complete the following information</p>  
-        
-    <form method="POST" action='{{url_server}}/existing/v1/result'>
-      
-      <div class="row row-cols-3">
+<div class="container py-4" id="mainForm" class="animate-fade">
+  <div id="directionProcess" class="direction-process">{{city}} / {{address}} / Solar check</div>
+  
+  <h2 class="existing-system-title mb-4 animate-fade" (click)="processing ? showForm() : goBack()">
+    {{ processing ? '< SolarCheckup Navigator' : '< Solar panel performance check' }}
+  </h2>
 
-        <div class="form-group col">
-          <label for="roof_tilt">Roof tilt: </label>
-          <input class="form-control" type="number" step="any" min="0" max="90" name="roof_tilt" value="20" required>
-        </div>
+  <p *ngIf="visible" class="instruction-text">Complete the following information</p>
 
-        <div class="form-group col">
-          <label for="roof_orientation">Roof orientation: </label>
-          <input class="form-control" type="number" step="any" min="-180" max="180" name="roof_orientation"  value="0" required><br/>
-          <!-- <p style="margin: 0 10px 0 0; color: gray">(South=0, East=-90, North=180, West=90)</p> -->
-        </div>
-
-        <div class="form-group col">
-          <label for="nom_power">Nominal power: </label>
-          <input class="form-control" type="number" step="any" min="0" name="nom_power"  value="1" required>
-        </div>
-      </div>
-      
-      <div class="form-group">
-        <label for="real_last_year">Energy generated last year [kWh]: </label>
-        <input class="form-control" type="number" step="any" min="0" name="real_last_year" required>
+  <form method="POST" action='{{url_server}}/existing/v1/result' class="glass-card animate-fade">
+    <div class="row row-cols-3 g-3">
+      <div class="form-group col">
+        <label for="roof_tilt">Roof tilt (°)</label>
+        <input class="form-control" type="number" step="any" min="0" max="90" name="roof_tilt" value="20" required>
       </div>
 
-      <div class="row row-cols-3">
-        <div class="col" style="display: flex;">
-          <button class="btn" (click)="goBack()">< Back</button>
-        </div>
-        <div class="col">
-
-        </div>
-        <div class="col">
-          <button class="btn" type="submit">Evaluate</button>
-        </div>
+      <div class="form-group col">
+        <label for="roof_orientation">Roof orientation</label>
+        <input class="form-control" type="number" step="any" min="-180" max="180" name="roof_orientation" value="0" required>
       </div>
-      <!-- <input style="margin: 5px 0" type="reset" value="Reset"> -->
-    </form>
-</div>
 
-<div id="results">
-</div>
-
-<div id="charts">
-  <div class="row">
-    <div class="col">
-      <div id="bar_chart_year">
-        <h5 style="font-weight: 700; color: #0D5D93; text-align: center;">Yearly cumulatives of a reference system</h5>
-        <ngx-charts-bar-vertical
-          [view]="view"
-          [scheme]="colorScheme"
-          [results]="chartDataBarYear"
-          [xAxis]="xAxis"
-          [yAxis]="yAxis"
-          [legend]="legend"
-          [showXAxisLabel]="showXAxisLabel"
-          [showYAxisLabel]="showYAxisLabel"
-          [xAxisLabel]="xAxisLabelBarYear"
-          [yAxisLabel]="yAxisLabelBarYear"
-          [customColors]="customColors"
-          style="display: flex; justify-content: center; align-items: center;"
-        >
-        </ngx-charts-bar-vertical>
+      <div class="form-group col">
+        <label for="nom_power">Nominal power (kW)</label>
+        <input class="form-control" type="number" step="any" min="0" name="nom_power" value="1" required>
       </div>
     </div>
-    <div class="col">
-      <div id="bar_chart_month">
-        <h5 style="font-weight: 700; color: #0D5D93; text-align: center;">Monthly means</h5>
-        <ngx-charts-bar-vertical
-          [view]="view"
-          [scheme]="colorScheme"
-          [results]="chartDataBarMonth"
-          [xAxis]="xAxis"
-          [yAxis]="yAxis"
-          [legend]="legend"
-          [showXAxisLabel]="showXAxisLabel"
-          [showYAxisLabel]="showYAxisLabel"
-          [xAxisLabel]="xAxisLabelBarMonth"
-          [yAxisLabel]="yAxisLabelBarMonth"
-          style="display: flex; justify-content: center; align-items: center;"
-        >
-        </ngx-charts-bar-vertical>
+
+    <div class="form-group mt-3">
+      <label for="real_last_year">Energy generated last year [kWh]</label>
+      <input class="form-control" style="width: 100% !important;" type="number" step="any" min="0" name="real_last_year" required>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col text-end">
+        <button class="btn btn-evaluate" type="submit">Evaluate</button>
       </div>
     </div>
-  </div>
-    
-  
-    
-  
-    <div id="line_chart_div">
-      <div id="month_selector">
-        <p>Let's proceed with an additional test: monthly clearsky day comparison.</p>
-        <p>Select the month you want to use for comparison.</p>
-        <form>
-          <label for="month">Month: </label>
-          <select class="form-select" name="month" style="margin: 5px 10px">
-            <option value="1">January</option>
-            <option value="2">February</option>
-            <option value="3">March</option>
-            <option value="4">April</option>
-            <option value="5">May</option>
-            <option value="6">June</option>
-            <option value="7">July</option>
-            <option value="8">August</option>
-            <option value="9">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
-          </select>
-          <button class="btn" type="submit">Submit</button>
-        </form>
+  </form>
+</div>
+
+<div id="results" class="container result-container animate-fade"></div>
+
+<div id="charts" class="container mt-5 animate-fade" style="display: none;">
+  <!--<div class="row g-4">
+    <div class="col-md-6">
+      <div id="bar_chart_year" class="chart-box">
+        <h5>Yearly cumulatives</h5>
+        <ngx-charts-bar-vertical [view]="view" [scheme]="colorScheme" [results]="chartDataBarYear" [xAxis]="xAxis" [yAxis]="yAxis" [legend]="legend" [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabelBarYear" [yAxisLabel]="yAxisLabelBarYear" [customColors]="customColors"></ngx-charts-bar-vertical>
       </div>
-      <div id="line_chart">
-        <h5 style="font-weight: 700; color: #0D5D93">Hourly energy production profiles for highest energy day of the selected month</h5>
-        <p id="chart_date"></p>
-        <div>
-          <ngx-charts-line-chart
-            [view]="view"
-            [legend]="legend"
-            [animations]="animations"
-            [scheme]="colorScheme"
-            [gradient]="gradient"
-            [showXAxisLabel]="showXAxisLabel"
-            [showYAxisLabel]="showYAxisLabel"
+    </div>
+    <div class="col-md-6">
+      <div id="bar_chart_month" class="chart-box">
+        <h5>Monthly means</h5>
+        <ngx-charts-bar-vertical [view]="view" [scheme]="colorScheme" [results]="chartDataBarMonth" [xAxis]="xAxis" [yAxis]="yAxis" [legend]="legend" [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabelBarMonth" [yAxisLabel]="yAxisLabelBarMonth"></ngx-charts-bar-vertical>
+      </div>
+    </div>
+  </div>-->
+  <!--<div class="row g-3"> 
+    <div class="col-md-6">
+      <div id="bar_chart_year" class="chart-box">
+        <h5>Yearly cumulatives</h5>
+        <div class="chart-wrapper">
+          <ngx-charts-bar-vertical
+            [view]="undefined"  [scheme]="colorScheme"
+            [results]="chartDataBarYear"
             [xAxis]="xAxis"
             [yAxis]="yAxis"
-            [xAxisLabel]="xAxisLabelLine"
-            [yAxisLabel]="yAxisLabelLine"
-            [results]="chartDataLine"
-            [showGridLines]="showGridLines"
-          >
-          </ngx-charts-line-chart>
-          <div id="comparation">
+            [legend]="legend"
+            [showXAxisLabel]="false" [showYAxisLabel]="showYAxisLabel"
+            [xAxisLabel]="xAxisLabelBarYear"
+            [yAxisLabel]="yAxisLabelBarYear"
+            [customColors]="customColors">
+          </ngx-charts-bar-vertical>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div id="bar_chart_month" class="chart-box">
+        <h5>Monthly means</h5>
+        <div class="chart-wrapper">
+          <ngx-charts-bar-vertical
+            [view]="undefined" [scheme]="colorScheme"
+            [results]="chartDataBarMonth"
+            [xAxis]="xAxis"
+            [yAxis]="yAxis"
+            [legend]="legend"
+            [showXAxisLabel]="false"
+            [showYAxisLabel]="showYAxisLabel"
+            [xAxisLabel]="xAxisLabelBarMonth"
+            [yAxisLabel]="yAxisLabelBarMonth">
+          </ngx-charts-bar-vertical>
+        </div>
+      </div>
+    </div>
+  </div>-->
+
+  <div class="chart-selector-wrapper mb-4">
+    <div class="chart-pill-box">
+      <button type="button" [class.active]="activeTab === 'yearly'" (click)="activeTab = 'yearly'">Yearly Cumulatives</button>
+      <button type="button" [class.active]="activeTab === 'monthly'" (click)="activeTab = 'monthly'">Monthly Means</button>
+      <button type="button" [class.active]="activeTab === 'test'" (click)="activeTab = 'test'">Performance Test</button>
+    </div>
+  </div>
+
+  <div class="main-card chart-card-anim">
+  
+  <div *ngIf="activeTab === 'yearly'" class="animate-fade">
+    <h5 class="text-center mb-3">Yearly cumulatives of a reference system</h5>
+    <div class="chart-wrapper">
+      <ngx-charts-bar-vertical [view]="undefined" [scheme]="colorScheme" [results]="chartDataBarYear" [xAxis]="xAxis" [yAxis]="yAxis" [customColors]="customColors"></ngx-charts-bar-vertical>
+    </div>
+  </div>
+
+  <div *ngIf="activeTab === 'monthly'" class="animate-fade">
+    <h5 class="text-center mb-3">Monthly means</h5>
+    <div class="chart-wrapper">
+      <ngx-charts-bar-vertical [view]="undefined" [scheme]="colorScheme" [results]="chartDataBarMonth" [xAxis]="xAxis" [yAxis]="yAxis"></ngx-charts-bar-vertical>
+    </div>
+  </div>
+
+  <div *ngIf="activeTab === 'test'" class="animate-fade p-3">
+  
+  <div *ngIf="lastResult; else noData">
+    
+    <div id="month_selector" *ngIf="comparisonStep === 'initial'">
+      <p class="fw-bold">Additional test: monthly clearsky day comparison.</p>
+      <p class="text-muted small">Select the month you want to use for comparison.</p>
+      
+      <form class="d-flex align-items-center gap-2 mt-3" (submit)="onMonthSelect($event)">
+        <label for="month">Month: </label>
+        <select class="form-select w-auto" name="month">
+          <option *ngFor="let m of months" [value]="m.value">{{m.name}}</option>
+        </select>
+        <button class="btn btn-evaluate" type="submit">Submit</button>
+      </form>
+    </div>
+
+    <div id="line_chart" *ngIf="comparisonStep !== 'initial'">
+      <h5 class="chart-title text-center">Hourly energy production profiles</h5>
+      <p id="chart_date" class="text-center text-primary fw-bold"></p>
+      
+      <div class="chart-container-line">
+        <ngx-charts-line-chart 
+          [view]="undefined" 
+          [results]="chartDataLine" 
+          [xAxis]="xAxis" 
+          [yAxis]="yAxis" 
+          [showXAxisLabel]="false" 
+          [showYAxisLabel]="true" 
+          [xAxisLabel]="xAxisLabelLine" 
+          [yAxisLabel]="yAxisLabelLine">
+        </ngx-charts-line-chart>
+      </div>
+
+      <div id="comparation" class="mt-4 border-top pt-3">
+  
+  <div *ngIf="comparisonStep === 'ask_similarity'" class="animate-fade">
+    <p>For the selected month, highest energy generation is: <strong>{{maxMonthGenValue}} kWh</strong></p>
+    <p class="text-justify">
+      Open your photovoltaic system monitoring app. Compare the data shown in SolarCheckup
+      Navigator with the shape of the hourly generation profile. Please choose a clear sky day.
+    </p>
+    <p class="fw-bold text-center">Are they similar?</p>
+    <div class="d-flex justify-content-center gap-3">
+      <button class="btn btn-evaluate" (click)="comparisonStep = 'final_suggestion'; isSimilar = 'Yes'">Yes</button>
+      <button class="btn btn-outline-danger" (click)="comparisonStep = 'show_problems'; isSimilar = 'No'">No</button>
+    </div>
+  </div>
+
+  <div *ngIf="comparisonStep === 'show_problems'" class="animate-fade">
+    <p class="text-center fw-bold">Select the issue that most resembles your profile:</p>
+
+    <div id="problemCarousel" class="carousel slide bg-light rounded p-4 border shadow-sm" data-bs-ride="false">
+      <div class="carousel-inner">
+        <div class="carousel-item" *ngFor="let prob of problems; let i = index" [class.active]="i === 0">
+          <div class="text-center">
+            <h6 class="text-primary mb-3">{{prob.name}}</h6>
+            <img [src]="prob.img" class="img-fluid rounded mb-3" style="max-height: 200px; object-fit: contain;">
+            <br>
+            <button class="btn btn-evaluate btn-sm px-4" (click)="selectedProblem = prob.id; comparisonStep = 'final_suggestion'">
+              Select this issue
+            </button>
           </div>
         </div>
       </div>
+
+      <button class="carousel-control-prev" type="button" data-bs-target="#problemCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon bg-dark rounded-circle" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#problemCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon bg-dark rounded-circle" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
     </div>
+  </div>
+
+  <div *ngIf="comparisonStep === 'final_suggestion'" class="animate-fade p-3 bg-light rounded border border-primary">
+    <div *ngIf="isSimilar === 'Yes'">
+      <p class="text-justify mb-0"><strong>Great!</strong> Looks like your system is performing well. Try to repeat this
+                    check monthly. If the monthly generation is very different with respect to the one expected, it
+                    can be that your system is underperforming. Repeat this test and consider contacting a solar
+                    expert for a field inspection.</p>
+    </div>
+    
+    <div *ngIf="isSimilar === 'No'">
+      <p class="mb-1"><strong>Issue identified:</strong> {{problems[+selectedProblem - 1]?.name}}</p>
+      <p class="text-justify mb-0 small">Based on your selection, we suggest a field inspection by a professional.</p>
+    </div>
+    
+    <button class="btn btn-sm btn-link mt-2" (click)="comparisonStep = 'initial'">← Change Month</button>
+  </div>
+
+</div>
+    </div>
+  </div>
+
+  <ng-template #noData>
+    <div class="text-center p-5">
+      <p class="text-muted">Please, complete the main form and click "Evaluate" first to see the performance test.</p>
+    </div>
+  </ng-template>
+</div>
 </div>
 
-<div id="backButton">
 </div>

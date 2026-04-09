@@ -1,45 +1,267 @@
-#charts {
-    display: none;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
+$navy: #052D65;
+$sky: #0D5D93;
+$light-blue: #f0f4f8;
+
+// Estilo general de tarjeta
+.glass-card {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  border: 1px solid #e1e8f1;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
 }
 
-#line_chart > div p {
-    max-width: 500px;
+.chart-box {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  border: 1px solid #e1e8f1;
+  h5 { color: $sky; font-size: 1.1rem; margin-bottom: 20px; text-align: center; font-weight: 700; }
 }
 
-input, select {
-    background-color: #052D651A;
-    color: #052D65;
-    font-weight: 700;
+// Botón moderno
+.btn-evaluate {
+  background-color: $navy !important;
+  color: white !important;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s;
+  &:hover { background-color: $sky !important; transform: translateY(-2px); }
 }
 
-button {
-    background-color: #052D65;
-    color: white;
-    float: right;
+// Asegura que el componente no desborde a su padre
+:host {
+    display: block;
+    width: 100%;
+    max-width: 100%;
 }
 
-button {
-    background-color: #052D65;
-    color: white;
-    float: right;
+.main-card {
+    width: 100%;
+    overflow-x: hidden; // Evita scroll horizontal molesto
 }
 
-input[name="real_last_year"] {
-    width: 66%;
-}
-
-.form-group {
+.chart-wrapper, .chart-container-line {
+    width: 100% !important;
+    height: 350px; // Altura fija para que no crezca infinito
     margin-bottom: 20px;
 }
 
-.text-center {
-    text-align: center;
+// Estilo para que el carrusel no sea gigante
+#problemCarousel {
+    max-width: 500px;
+    margin: 0 auto;
 }
 
-.button-back {
-    background-color: #edeeef;
-    color: #00b5dd;
+// Estilos de texto
+.direction-process {
+  font-size: 13px;
+  color: $sky;
+  font-weight: 500;
+  margin-bottom: 10px;
+  opacity: 0.8;
+}
+
+.existing-system-title {
+  cursor: pointer;
+  font-weight: 800;
+  color: $navy;
+  &:hover { color: $sky; }
+}
+
+.instruction-text {
+  color: #627A9C;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+// Estilo de inputs
+.form-control, .form-select {
+  background-color: #f8fafd !important;
+  border: 1px solid #dce4ec !important;
+  color: $navy !important;
+  font-weight: 600;
+  &:focus {
+    border-color: $sky !important;
+    background-color: white !important;
+    box-shadow: 0 0 0 3px rgba($sky, 0.1);
+  }
+}
+
+// Para que las gráficas no se corten
+ngx-charts-bar-vertical, ngx-charts-line-chart {
+  display: flex;
+  justify-content: center;
+}
+
+// Estilo para el contenido inyectado por JS en 'comparation'
+#comparation {
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+  p { text-align: justify; color: #444; }
+}
+
+// Contenedor para forzar que el gráfico ocupe el 100%
+.chart-wrapper {
+  width: 100%;
+  height: 350px; // Altura fija para que no colapse
+  display: block;
+  position: relative;
+  overflow: hidden; // Evita que el gráfico "se salga"
+}
+
+// Ajuste para las etiquetas de los ejes (que se ven amontonadas)
+::ng-deep .ngx-charts {
+  text {
+    fill: #627A9C; // Color de letra más suave
+    font-size: 11px;
+  }
+}
+
+// Para que las tarjetas no hagan un scroll infinito lateral
+.row {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+.chart-box {
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  border: 1px solid #e1e8f1;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  height: 100%; // Para que ambas tarjetas midan lo mismo
+}
+
+.chart-selector-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.chart-pill-box {
+  background: #e1e8f0;
+  padding: 5px;
+  border-radius: 50px;
+  display: inline-flex;
+  gap: 5px;
+
+  button {
+    border: none;
+    padding: 8px 25px;
+    border-radius: 40px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #052D65;
+    background: transparent;
+    transition: all 0.3s ease;
+    cursor: pointer;
+
+    &.active {
+      background: #052D65;
+      color: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    
+    &:hover:not(.active) {
+      background: rgba(255,255,255,0.5);
+    }
+  }
+}
+
+
+
+// Contenedor para que el gráfico no se salga
+.chart-wrapper {
+  width: 100%;
+  height: 400px; // Altura cómoda para ver bien los datos
+  position: relative;
+}
+
+// Animación suave al cambiar
+.animate-fade {
+  animation: fadeIn 0.4s ease;
+}
+
+/* Contenedor del test adicional para que no crezca infinito */
+#line_chart_div {
+  max-height: 85vh; // Limita el alto al 85% de la pantalla
+  overflow-y: auto; // Si el contenido excede, hace scroll interno solo en la tarjeta
+  padding-right: 10px;
+}
+
+/* Optimización del formulario de problemas inyectado por JS */
+#problemForm {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); // Formato rejilla
+  gap: 15px;
+  margin-top: 20px;
+
+  .form-check {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    label {
+      order: 1; // El texto arriba
+      margin-bottom: 8px;
+    }
+
+    img {
+      order: 2; // La imagen en medio
+      width: 100% !important;
+      max-width: 150px; // Reducimos el tamaño de la miniatura
+      height: auto;
+      margin-bottom: 10px !important;
+      border-radius: 4px;
+    }
+
+    input {
+      order: 3; // El radio button abajo
+    }
+  }
+
+  button[type="submit"] {
+    grid-column: 1 / -1; // El botón ocupa todo el ancho abajo
+    margin-top: 10px;
+  }
+}
+
+#problemCarousel {
+  max-width: 450px;
+  margin: 0 auto;
+
+  .carousel-item {
+    padding: 0 40px; // Espacio para que las flechas no tapen la imagen
+  }
+
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    width: 2rem;
+    height: 2rem;
+    background-size: 60%;
+  }
+}
+
+.text-justify {
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+/* Ajuste para el gráfico de líneas */
+.chart-container-line {
+  height: 300px;
+  width: 100%;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
 }

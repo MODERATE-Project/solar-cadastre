@@ -1,102 +1,97 @@
 <div class="container">
-  <div *ngIf="window == 1" id="form">
-    <h2 style="font-weight: 700; color: #051B39;">Calculate energy potential</h2>
-    <p style="color: #627A9C">Complete the following information</p>
+  <div *ngIf="window == 1" id="form" class="animate-fade">
+  <div class="direction-process">{{city}} / {{address}} / Calculate energy potential</div>
+  
+  <h2 class="solar-potential-title mb-4" (click)="backToData()">
+    < Calculate energy potential
+  </h2>
 
-      <form method="POST" action='{{url_server}}/potential/v2/result' id="potentialMainForm">
+  <p class="instruction-text">Complete the following information to estimate your potential</p>
 
-        <div class="row row-cols-3">
-          <div class="form-group col-xs">
-            <label for="roof_tilt">Roof tilt: </label>
-            <input class="form-control" type="number" step="any" min="0"  max="90" name="roof_tilt" [value]="roof_tilt" required>
-          </div>
+  <form id="potentialMainForm" class="glass-card shadow-sm">
+    
+    <div class="row g-3 mb-4">
+      <div class="form-group col-md-4">
+        <label for="roof_tilt">Roof tilt (°)</label>
+        <input class="form-control" type="number" step="any" min="0" max="90" name="roof_tilt" [value]="roof_tilt" required>
+      </div>
 
-          <div class="form-group col-xs">
-            <label for="roof_orientation">Roof orientation: </label>
-            <input class="form-control" type="number" step="any" min="-180" max="180" name="roof_orientation" [value]="roof_orientation" required>
-            <!-- <p style="margin: 0 10px 0 0; col-xsor: gray">(South=0, East=-90, North=180, West=90)</p> -->
-          </div>
+      <div class="form-group col-md-4">
+        <label for="roof_orientation">Roof orientation</label>
+        <input class="form-control" type="number" step="any" min="-180" max="180" name="roof_orientation" [value]="roof_orientation" required>
+      </div>
 
-          <div class="form-group col-xs">
-            <label for="nom_power">Nominal power [kWp]: </label>
-            <input class="form-control" type="number" step="any" min="0" name="nom_power" [value]="nom_power" required>
-          </div>
+      <div class="form-group col-md-4">
+        <label for="nom_power">Nominal power (kWp)</label>
+        <input class="form-control" type="number" step="any" min="0" name="nom_power" [value]="nom_power" required>
+      </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="form-group col-md-4">
+        <label for="yearly_consumption">Yearly consumption (kWh)</label>
+        <input class="form-control" type="number" step="any" min="0" name="yearly_consumption" [value]="yearly_consumption" required>
+      </div>
+
+      <div class="form-group col-md-4">
+        <label for="electricity_cost">Elec. cost (€/kWh)</label>
+        <input class="form-control" type="number" step="0.01" min="0" name="electricity_cost" [value]="electricity_cost" required>
+      </div>
+
+      <div class="form-group col-md-4">
+        <label for="value_sold_electricity">Sold elec. value (€/kWh)</label>
+        <input class="form-control" type="number" step="0.01" min="0" name="value_sold_electricity" [value]="value_sold_electricity" required>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="form-group col-md-4">
+        <label for="pv_cost">PV cost (€/kWp)</label>
+        <input class="form-control" type="number" step="0.01" min="0" name="pv_cost" [value]="pv_cost" required>
+      </div>
+
+      <div class="form-group col-md-8">
+        <label for="profile">Consumption Profile</label>
+        <select class="form-select mb-2" name="profile" [(ngModel)]="profileSelected" (change)="consoleJorge()">
+          <option *ngFor="let profile of profiles" [value]="profile">{{profile}}</option>
+        </select>
+        
+        <div class="profile-hint-box">
+          <small><strong>Residential 1:</strong> Family household (working parents + 2 kids).</small><br>
+          <small><strong>Residential 2:</strong> Small Condominium (3 families constellation).</small><br>
+          <small><strong>Residential 3:</strong> Apartment block (10 parties mix).</small>
         </div>
+      </div>
+    </div>
 
-        <div class="row row-cols-3">
-          <div class="form-group col">
-            <label for="yearly_consumption">Yearly consumption [kWh]: </label>
-            <input class="form-control" type="number" step="any" min="0" name="yearly_consumption" [value]="yearly_consumption" required>
-          </div>
-
-          <div class="form-group col">
-            <label for="electricity_cost">Electricity cost [€/kWh]: </label>
-            <input class="form-control" type="number" step="0.01" min="0" name="electricity_cost" [value]="electricity_cost" required>
-          </div>
-
-          <div class="form-group col">
-            <label for="value_sold_electricity">Value of sold electricity [€/kWh]: </label>
-            <input class="form-control" type="number" step="0.01" min="0" name="value_sold_electricity" [value]="value_sold_electricity" required>
-          </div>
-        </div>
-
-        <div class="row row-cols-3">
-          <div class="form-group col">
-            <label for="pv_cost">PV cost [€/kWp]: </label>
-            <input class="form-control" type="number" step="0.01" min="0" name="pv_cost" [value]="pv_cost" required><br/>
-          </div>
-
-          <!--<div class="form-group col">
-            <label>Profile:</label>
-            <mat-form-field>
-              <mat-label>Select profile</mat-label>
-              <mat-select id="profile" name="profile" [(ngModel)]="profileSelected">
-                <mat-option *ngFor="let profile of profiles" [value]="profile">
-                  {{profile}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>-->
-
-          <div class="form-group col">
-            <label for="profile">Profile: </label>
-            <select class="form-select" name="profile" [(ngModel)]="profileSelected" (change)="consoleJorge()">
-              <option *ngFor="let profile of profiles" [value]="profile">{{profile}}</option>
-            </select>
-          </div>
-
-
-        </div>
-
-        <div class="row row-cols-3">
-          <div class="col" style="display: flex;">
-            <button class="btn" (click)="backToData()">< Back</button>
-          </div>
-          <div class="col">
-
-          </div>
-          <div class="col">
-            <button class="btn" (click)="calculateData()">Calculate</button>
-          </div>
-        </div>
-        <!-- <input style="margin: 5px 0" type="reset" value="Reset"> -->
-
-      </form>
-  </div>
+    <div class="row mt-4">
+      <div class="col text-end">
+        <button class="btn btn-evaluate" (click)="calculateData()">
+          Calculate Potential
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
 
   <h2 class="processing" *ngIf="window == 2">
     Processing...
   </h2>
 
-  <div *ngIf="window == 3">
+  <!--<div *ngIf="window == 3">
+    <div class="direction-process">{{city}} / {{address}} / Calculate energy potential / Energy potential</div>
 
-    <h2 style="font-weight: bold; color: #051B39; text-align: center;">Solar potential</h2>
+    <h2 class="solar-potential-results" (click)="backToForm()">< Solar potential</h2>
 
     <div id="results">
       <table class="table">
+        <tr>
+          <th>Parameter</th>
+          <th>Value</th>
+        </tr>
         <tr *ngFor="let i of resultValue | keyvalue">
-          <td style="background-color: #0F4881; color: white;">{{i.key}}</td>
-          <td style="background-color: #08D2F1; color: white;">{{i.value}}</td>
+          <td>{{i.key}}</td>
+          <td>{{i.value}}</td>
         </tr>
       </table>
     </div>
@@ -119,7 +114,68 @@
       </ngx-charts-bar-vertical-2d>
     </div>
     <div>
-      <button id="buttonBack" class="btn buttonBack" (click)="backToForm()">Back to form</button>
+    </div>
+  </div>-->
+  <div *ngIf="window == 3" class="animate-fade">
+  <div class="direction-process">{{city}} / {{address}} / Energy potential</div>
+
+  <h2 class="solar-potential-results mb-4" (click)="backToForm()">
+    < Energy potential
+  </h2>
+
+  <div class="tabs-container mb-4">
+    <div class="tabs-pills">
+      <button [class.active]="activeTab === 'table'" (click)="setTab('table')">
+        <i class="bi bi-table"></i> Data Summary
+      </button>
+      <button [class.active]="activeTab === 'chart'" (click)="setTab('chart')">
+        <i class="bi bi-bar-chart"></i> Monthly Distribution
+      </button>
     </div>
   </div>
+
+  <div class="main-card result-content">
+    
+    <div *ngIf="activeTab === 'table'" class="animate-fade">
+      <h5 class="results-subtitle">Key Performance Indicators</h5>
+      <div class="table-responsive">
+        <table class="table custom-solar-table">
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let i of resultValue | keyvalue">
+              <td class="param-name">{{i.key}}</td>
+              <td class="param-value">{{i.value}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div *ngIf="activeTab === 'chart'" class="animate-fade">
+      <h5 class="results-subtitle">Monthly Energy Distribution</h5>
+      <div class="chart-full-wrapper">
+        <ngx-charts-bar-vertical-2d
+          [view]="undefined"
+          [scheme]="colorScheme"
+          [results]="chartDataPotential"
+          [xAxis]="xAxis"
+          [yAxis]="yAxis"
+          [legend]="true"
+          [showXAxisLabel]="false"
+          [showYAxisLabel]="true"
+          [xAxisLabel]="xAxisPotential"
+          [yAxisLabel]="yAxisPotential"
+          [barPadding]="4"
+          [groupPadding]="16">
+        </ngx-charts-bar-vertical-2d>
+      </div>
+    </div>
+
+  </div>
+</div>
 </div>

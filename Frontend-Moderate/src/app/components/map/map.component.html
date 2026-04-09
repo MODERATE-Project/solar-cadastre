@@ -43,6 +43,56 @@
     </nav>
   </div>
   <div id="right">
-    <div id="map"></div>
+    <div class="map-and-panel">
+      <div id="map"></div>
+      <div class="layer-panel">
+        <div class="layer-group">
+          <h3 class="title-clickable" (click)="toggleGroup('baseMaps')">{{ groups.baseMaps ? '-' : '+' }} Base maps</h3>
+          <div [hidden]="!groups.baseMaps">
+            <label>
+              <input type="radio" name="basemap" checked (change)="setBaseLayer(openStreetMapLayer)">
+              OpenStreetMap
+            </label>
+            <label>
+              <input type="radio" name="basemap" (change)="setBaseLayer(topographicLayer)">
+              Topographic
+            </label>
+            <label>
+              <input type="radio" name="basemap" (change)="setBaseLayer(streetsLayer)">
+              Streets
+            </label>
+          </div>
+        </div>
+
+        <div class="layer-group">
+          <h3 class="title-clickable" (click)="toggleGroup('cadastre')">{{ groups.cadastre ? '-' : '+' }} Spanish cadastre</h3>
+          <div [hidden]="!groups.cadastre">
+            <label>
+              <input type="checkbox" (change)="toggleLayer(cadastreLayer, $event)">
+              Spanish cadastre
+            </label>
+          </div>
+          
+        </div>
+        
+        <div class="layer-group">
+          <h3 class="title-clickable" (click)="toggleGroup('buildings')">{{ groups.buildings ? '-' : '+' }} Cadastral buildings</h3>
+          <div [hidden]="!groups.buildings">
+            <label>
+              <input type="checkbox" (change)="toggleLayer(buildingCadastralLayer, $event)">
+              Default
+            </label>
+            <label>
+              <input type="checkbox" (change)="toggleLayer(buildingCadastralLayerTypology, $event, 'typology')">
+              Typology
+            </label>
+            <label>
+              <input type="checkbox" (change)="toggleLayer(buildingCadastralLayerThermalNeeds, $event, 'thermal_needs')">
+              Thermal needs
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
