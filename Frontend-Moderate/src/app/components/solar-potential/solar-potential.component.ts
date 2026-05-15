@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
 import { CoordinatesService } from 'src/app/services/coordinates.service';
+import { environment } from 'src/environments/environment';
 import { WindowService } from 'src/app/services/window.service';
 import { CityService } from 'src/app/services/city.service';
 
@@ -52,7 +53,7 @@ export class SolarPotentialComponent {
   chartDataPotential: any[] = [];
 
   //url_server = "https://desarrollo.ubikgs.com";
-  url_server = "http://localhost:8000";
+  url_server = environment.apiUrl;
   //url_server = "https://re-modulees.five.es/backend";
   peticion: string = this.url_server + "/potential/v2/result";
 

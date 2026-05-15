@@ -10,6 +10,7 @@ import "@geoman-io/leaflet-geoman-free";
 import { BuildingsService } from 'src/app/services/buildings.service';
 import { SolarPotentialComponent } from '../solar-potential/solar-potential.component';
 import { ExistingSystemComponent } from '../existing-system/existing-system.component';
+import { environment } from 'src/environments/environment';
 import { TablesComponent } from '../tables/tables.component';
 import { CoordinatesService } from 'src/app/services/coordinates.service';
 import { CityService } from 'src/app/services/city.service';
@@ -63,9 +64,9 @@ export class MapComponent implements OnInit {
   // Stores active basemap
   currentBaseLayer: L.TileLayer;
 
-  buildingCadastralLegendTypology = "http://localhost:8080/geoserver/Moderate/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=Moderate:cadastral_buildings&STYLE=cadastral_buildings";
+  buildingCadastralLegendTypology = `${environment.geoserverUrl}/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=GeoModerate:cadastral_buildings&STYLE=cadastral_buildings`;
 
-  buildingCadastralLegendThermalNeeds = "http://localhost:8080/geoserver/Moderate/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=Moderate:cadastral_buildings&STYLE=thermal_needs";
+  buildingCadastralLegendThermalNeeds = `${environment.geoserverUrl}/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=GeoModerate:cadastral_buildings&STYLE=thermal_needs`;
 
   groups = {
     baseMaps: true,
@@ -73,9 +74,9 @@ export class MapComponent implements OnInit {
     buildings: true
   };
 
-  private pvGenerationCells = "http://localhost:8080/geoserver/Moderate/wms?";
+  private pvGenerationCells = `${environment.geoserverUrl}/wms?`;
   //private buildingCadastral = "https://re-modulees.five.es:8443/geoserver/Moderate/wms?"
-  private buildingCadastral = "http://localhost:8080/geoserver/Moderate/wms?"
+  private buildingCadastral = `${environment.geoserverUrl}/wms?`
 
   point: any;
   visibleMessage: boolean = true;
@@ -222,14 +223,14 @@ hideLegend() {
     const buildingPVGeneration = L.tileLayer.wms(this.pvGenerationCells, {
       format: 'image/png',
       transparent: true,
-      layers: 'Moderate:PV generation convinient cells',
+      layers: 'GeoModerate:PV generation convinient cells',
       tileSize: 2080,
     });
 
     this.buildingCadastralLayer = L.tileLayer.wms(this.buildingCadastral, {
       format: 'image/png',
       transparent: true,
-      layers: '	Moderate:cadastral_buildings',
+      layers: 'GeoModerate:cadastral_buildings',
       tileSize: 3080,
       crs: crs4326
     });
@@ -237,7 +238,7 @@ hideLegend() {
     this.buildingCadastralLayerTypology = L.tileLayer.wms(this.buildingCadastral, {
       format: 'image/png',
       transparent: true,
-      layers: '	Moderate:cadastral_buildings',
+      layers: 'GeoModerate:cadastral_buildings',
       tileSize: 3080,
       styles: 'cadastral_buildings',
       crs: crs4326
@@ -246,7 +247,7 @@ hideLegend() {
     this.buildingCadastralLayerThermalNeeds = L.tileLayer.wms(this.buildingCadastral, {
       format: 'image/png',
       transparent: true,
-      layers: '	Moderate:cadastral_buildings',
+      layers: 'GeoModerate:cadastral_buildings',
       tileSize: 3080,
       styles: '	thermal_needs',
       opacity: 0.7,
@@ -274,7 +275,7 @@ hideLegend() {
 
     control.addTo(this.map);*/
 
-    const token = 'AAPK5405a7c87b1840238d0451576f7a4c56siHssPxZJRvP5MpPtAVXxjyJcvyuhicuES_NHhvk2J-TRG_COpGkw91f17oH7vQY'
+    const token = environment.arcgisToken
 
     const searchControl = new esri_geo.Geosearch({
       useMapBounds: false,

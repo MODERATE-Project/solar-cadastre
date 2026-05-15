@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output, Renderer2 } from '@angular/core';
 import { CityService } from 'src/app/services/city.service';
 import { CoordinatesService } from 'src/app/services/coordinates.service';
+import { environment } from 'src/environments/environment';
 import { WindowService } from 'src/app/services/window.service';
 
 @Component({
@@ -54,7 +55,7 @@ export class ExistingSystemComponent {
   chartDataBarMonth: any[];
 
   //url_server = "https://desarrollo.ubikgs.com";
-  url_server = "http://localhost:8000";
+  url_server = environment.apiUrl;
   //url_server = "https://re-modulees.five.es/backend";
 
   visible: boolean = true;
